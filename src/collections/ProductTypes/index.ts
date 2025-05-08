@@ -19,6 +19,7 @@ export const ProductTypes: CollectionConfig = {
       name: 'productType',
       label: 'Product Type',
       type: 'text',
+      unique: true,
       required: true,
     },
     {

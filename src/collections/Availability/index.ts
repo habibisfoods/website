@@ -3,11 +3,8 @@ import { CollectionConfig } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 
-export const Products: CollectionConfig = {
-  slug: 'products',
-  admin: {
-    useAsTitle: 'productName',
-  },
+export const Availability: CollectionConfig = {
+  slug: 'availability',
   access: {
     create: authenticated,
     delete: authenticated,
@@ -18,23 +15,16 @@ export const Products: CollectionConfig = {
     {
       name: 'productName',
       label: 'Product Name',
-      type: 'text',
-      unique: true,
-      required: true,
-    },
-    {
-      name: 'productType',
-      label: 'Product Type',
       type: 'relationship',
-      relationTo: 'productTypes',
+      relationTo: 'products',
       required: true,
     },
     {
-      name: 'locations',
-      label: 'Locations',
-      type: 'join',
-      collection: 'availability',
-      on: 'productName',
+      name: 'storeName',
+      label: 'Store Name',
+      type: 'relationship',
+      relationTo: 'locations',
+      required: true,
     },
   ],
 }

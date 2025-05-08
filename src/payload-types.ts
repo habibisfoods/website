@@ -75,6 +75,7 @@ export interface Config {
     products: Product;
     locations: Location;
     productTypes: ProductType;
+    availability: Availability;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -86,7 +87,10 @@ export interface Config {
   };
   collectionsJoins: {
     products: {
-      location: 'locations';
+      locations: 'availability';
+    };
+    locations: {
+      products: 'availability';
     };
     productTypes: {
       products: 'products';
@@ -101,6 +105,7 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
     productTypes: ProductTypesSelect<false> | ProductTypesSelect<true>;
+    availability: AvailabilitySelect<false> | AvailabilitySelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -748,8 +753,8 @@ export interface Product {
   id: number;
   productName: string;
   productType: number | ProductType;
-  location?: {
-    docs?: (number | Location)[];
+  locations?: {
+    docs?: (number | Availability)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
@@ -773,6 +778,17 @@ export interface ProductType {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "availability".
+ */
+export interface Availability {
+  id: number;
+  productName: number | Product;
+  storeName: number | Location;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "locations".
  */
 export interface Location {
@@ -781,8 +797,12 @@ export interface Location {
   storeName: string;
   address: string;
   city: string;
-  province: string;
-  products: (number | Product)[];
+  province: 'AB' | 'BC' | 'MB' | 'NB' | 'NL' | 'NS' | 'NT' | 'NU' | 'ON' | 'PE' | 'QC' | 'SK' | 'YT';
+  products?: {
+    docs?: (number | Availability)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -989,6 +1009,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'productTypes';
         value: number | ProductType;
+      } | null)
+    | ({
+        relationTo: 'availability';
+        value: number | Availability;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1354,7 +1378,7 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   productName?: T;
   productType?: T;
-  location?: T;
+  locations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1379,6 +1403,16 @@ export interface LocationsSelect<T extends boolean = true> {
 export interface ProductTypesSelect<T extends boolean = true> {
   productType?: T;
   products?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "availability_select".
+ */
+export interface AvailabilitySelect<T extends boolean = true> {
+  productName?: T;
+  storeName?: T;
   updatedAt?: T;
   createdAt?: T;
 }

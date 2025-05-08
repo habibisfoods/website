@@ -25,6 +25,7 @@ export const Locations: CollectionConfig = {
       name: 'storeName',
       label: 'Store Name',
       type: 'text',
+      unique: true,
       required: true,
     },
     {
@@ -42,16 +43,16 @@ export const Locations: CollectionConfig = {
     {
       name: 'province',
       label: 'Province',
-      type: 'text',
+      type: 'select',
+      options: ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'],
       required: true,
     },
     {
       name: 'products',
       label: 'Products',
-      type: 'relationship',
-      hasMany: true,
-      required: true,
-      relationTo: 'products',
+      type: 'join',
+      collection: 'availability',
+      on: 'storeName',
     },
   ],
 }
