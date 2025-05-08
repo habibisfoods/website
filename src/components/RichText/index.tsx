@@ -12,6 +12,8 @@ import {
 } from '@payloadcms/richtext-lexical/react'
 
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
+import { SocialMediaProps } from '@/blocks/SocialMedia/Component'
+import  SocialMediaConverter  from '@/blocks/SocialMedia/Component'
 
 import type {
   BannerBlock as BannerBlockProps,
@@ -52,6 +54,10 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     ),
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
+    socialMedia: ({ node }: { node: SerializedBlockNode<SocialMediaProps> }) => {
+      const { platform, url } = node.fields
+      return <SocialMediaConverter platform={platform} url={url} />
+    }
   },
 })
 
