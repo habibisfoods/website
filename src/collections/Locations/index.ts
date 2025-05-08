@@ -48,6 +48,11 @@ export const Locations: CollectionConfig = {
       required: true,
     },
     {
+      name: 'postalCode',
+      label: 'Postal Code',
+      type: 'text',
+    },
+    {
       name: 'products',
       label: 'Products',
       type: 'join',

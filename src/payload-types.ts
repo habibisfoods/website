@@ -800,6 +800,7 @@ export interface Location {
   address: string;
   city: string;
   province: 'AB' | 'BC' | 'MB' | 'NB' | 'NL' | 'NS' | 'NT' | 'NU' | 'ON' | 'PE' | 'QC' | 'SK' | 'YT';
+  postalCode?: string | null;
   products?: {
     docs?: (number | Availability)[];
     hasNextPage?: boolean;
@@ -1396,6 +1397,7 @@ export interface LocationsSelect<T extends boolean = true> {
   address?: T;
   city?: T;
   province?: T;
+  postalCode?: T;
   products?: T;
   updatedAt?: T;
   createdAt?: T;
