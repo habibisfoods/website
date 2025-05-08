@@ -23,6 +23,11 @@ export const Products: CollectionConfig = {
       required: true,
     },
     {
+      name: 'productImage',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
       name: 'productType',
       label: 'Product Type',
       type: 'relationship',

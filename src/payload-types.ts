@@ -753,6 +753,7 @@ export interface Form {
 export interface Product {
   id: number;
   productName: string;
+  productImage?: (number | null) | Media;
   productType: number | ProductType;
   locations?: {
     docs?: (number | Availability)[];
@@ -1379,6 +1380,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   productName?: T;
+  productImage?: T;
   productType?: T;
   locations?: T;
   updatedAt?: T;
