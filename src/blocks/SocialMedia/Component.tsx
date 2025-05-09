@@ -1,48 +1,54 @@
-// blocks/SocialMedia/Component.tsx
-
 import React from 'react';
-import { FaFacebook, FaLinkedin, FaInstagram, FaYoutube, FaGithub } from 'react-icons/fa'
-import { FaXTwitter } from 'react-icons/fa6'
-// Define types for the block fields (you can adjust this according to your actual fields)
-export interface SocialMediaProps {
-  platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'youtube' | 'github'; // Add any other platforms if needed
+import {
+  FaFacebook,
+  FaLinkedin,
+  FaInstagram,
+  FaYoutube,
+  FaGithub
+} from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
+import type { IconType } from 'react-icons';
+
+// Map of supported icons
+export const iconMap: Record<string, IconType> = {
+  facebook: FaFacebook,
+  twitter: FaXTwitter,
+  instagram: FaInstagram,
+  linkedin: FaLinkedin,
+  youtube: FaYoutube,
+  github: FaGithub,
+};
+
+// Define individual link type
+export interface SocialMediaLink {
+  platform: keyof typeof iconMap;
   url: string;
 }
 
-// The SocialMediaConverter component will be used to render the SocialMedia block
-const SocialMediaConverter: React.FC<SocialMediaProps> = ({ platform, url }) => {
-  let platformIcon;
+// Define props for the block which now accepts an array of links
+export interface SocialMediaProps {
+  links: SocialMediaLink[];
+}
 
-  switch (platform) {
-    case 'facebook':
-      platformIcon = <FaFacebook />;
-      break;
-    case 'twitter':
-      platformIcon = <FaXTwitter />;
-      break;
-    case 'instagram':
-      platformIcon = <FaInstagram />;
-      break;
-    case 'linkedin':
-      platformIcon = <FaLinkedin />;
-      break;
-    case 'youtube':
-      platformIcon = <FaYoutube />;
-      break;
-    case 'github':
-      platformIcon = <FaGithub />;
-      break;
-    default:
-      platformIcon = <i className="fas fa-share-alt" />;
-      break;
-  }
-
+// Converter component that renders multiple links
+const SocialMediaConverter: React.FC<SocialMediaProps> = ({ links }) => {
   return (
-    <div className="social-media-block">
-      <a href={url} target="_blank" rel="noopener noreferrer" className="social-media-link">
-        {platformIcon}
-        <span>{platform}</span>
-      </a>
+    <div className="social-media-block flex space-x-4">
+      {links.map((link, idx) => {
+        const Icon = iconMap[link.platform] || (() => <i className="fas fa-share-alt" />);
+        return (
+          <a
+            key={idx}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-media-link flex items-center space-x-1"
+          >
+            <Icon />
+            <span className="sr-only">{link.platform}</span>
+          </a>
+        );
+      })}
     </div>
   );
 };

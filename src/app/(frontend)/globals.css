@@ -101,3 +101,51 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+/* Social Media Links Container */
+.social-media-block {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+/* Individual Link */
+.social-media-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.375rem;  
+  background-color: #f35d40;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Icon sizing */
+.social-media-link svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Hover / Focus State */
+.social-media-link:hover,
+.social-media-link:focus {
+  background-color: #d94a30;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* Visually hidden text for screen readers */
+.social-media-link .sr-only {
+  position: absolute;
+  width: 1px; 
+  height: 1px; 
+  padding: 0; 
+  margin: -1px; 
+  overflow: hidden; 
+  clip: rect(0,0,0,0); 
+  border: 0;
+}

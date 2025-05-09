@@ -16,22 +16,35 @@ export const iconMap: Record<string, IconType> = {
 export const SocialMedia: Block = {
   slug: 'socialMedia',
   labels: {
-    singular: 'Social Media Link',
+    singular: 'Social Media Links',
     plural: 'Social Media Links',
   },
   fields: [
     {
-      name: 'platform',
-      type: 'select',
-      label: 'Platform',
-      options: Object.keys(iconMap),
-      required: true,
-    },
-    {
-      name: 'url',
-      type: 'text',
-      label: 'Profile URL',
-      required: true,
+      name: 'links',
+      label: 'Social Media Links',
+      type: 'array',          // <-- switch to an array
+      minRows: 1,
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'platform',
+              type: 'select',
+              label: 'Platform',
+              options: Object.keys(iconMap),
+              required: true,
+            },
+            {
+              name: 'url',
+              type: 'text',
+              label: 'Profile URL',
+              required: true,
+            },
+          ],
+        },
+      ],
     },
   ],
 };
