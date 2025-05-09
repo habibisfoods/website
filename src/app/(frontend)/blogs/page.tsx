@@ -3,6 +3,7 @@ import type { Metadata } from 'next/types'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
+import { Media } from '@/components/Media'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
@@ -31,15 +32,39 @@ export default async function Page() {
       meta: true,
     },
   })
+  const [latestPost, ...restPosts] = posts.docs
 
   return (
     <div className="pt-24 pb-24">
       <PageClient />
+
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
           <h1>Blogs</h1>
         </div>
       </div>
+
+      {latestPost && (
+        <div className="container mb-16">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">{latestPost.title}</h2>
+              <p className="text-gray-600 mb-4">{latestPost.meta?.description}</p>
+              <a href={`/posts/${latestPost.slug}`} className="text-blue-500 hover:underline">
+                Read More →
+              </a>
+            </div>
+            <div className="w-full h-64 bg-gray-200 rounded-lg">
+              {typeof latestPost?.meta?.image === 'object' && latestPost.meta.image && (
+                  <Media
+                    resource={latestPost.meta.image}
+                    className="w-full h-96 object-cover rounded-xl mb-6"
+                  />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="container mb-8">
         <PageRange
@@ -50,7 +75,7 @@ export default async function Page() {
         />
       </div>
 
-      <CollectionArchive posts={posts.docs} />
+      <CollectionArchive posts={restPosts} />
 
       <div className="container">
         {posts.totalPages > 1 && posts.page && (
