@@ -54,7 +54,7 @@ export default async function Page() {
                 How to Make It →
               </a>
             </div>
-            <div className="w-full h-64 bg-gray-200 rounded-lg">
+            <div className="w-[500px] h-[500px] bg-gray-200 rounded-lg">
               {typeof latestPost?.meta?.image === 'object' && latestPost.meta.image && (
                   <Media
                     resource={latestPost.meta.image}
