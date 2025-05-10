@@ -55,9 +55,9 @@ export const Locations: CollectionConfig = {
     {
       name: 'products',
       label: 'Products',
-      type: 'join',
-      collection: 'availability',
-      on: 'storeName',
+      type: 'relationship',
+      relationTo: 'products',
+      hasMany: true,
     },
   ],
 }

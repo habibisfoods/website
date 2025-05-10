@@ -28,18 +28,11 @@ export const Products: CollectionConfig = {
       relationTo: 'media',
     },
     {
-      name: 'productType',
-      label: 'Product Type',
-      type: 'relationship',
-      relationTo: 'productTypes',
-      required: true,
-    },
-    {
       name: 'locations',
       label: 'Locations',
       type: 'join',
-      collection: 'availability',
-      on: 'productName',
+      collection: 'locations',
+      on: 'products',
     },
   ],
 }
