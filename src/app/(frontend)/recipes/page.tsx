@@ -57,7 +57,7 @@ export default async function Page() {
                 appearance="inline"
                 className="text-blue-500 hover:underline"
               >
-                Read More →
+                See How to Make it →
               </CMSLink>
             </div>
             <div className="w-[500px] h-[500px] bg-gray-200 rounded-lg">
