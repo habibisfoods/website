@@ -74,6 +74,7 @@ export interface Config {
     users: User;
     products: Product;
     locations: Location;
+    productTypes: ProductType;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -87,6 +88,9 @@ export interface Config {
     products: {
       locations: 'locations';
     };
+    productTypes: {
+      locations: 'locations';
+    };
   };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -96,6 +100,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
+    productTypes: ProductTypesSelect<false> | ProductTypesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -764,7 +769,23 @@ export interface Location {
   city: string;
   province: 'AB' | 'BC' | 'MB' | 'NB' | 'NL' | 'NS' | 'NT' | 'NU' | 'ON' | 'PE' | 'QC' | 'SK' | 'YT';
   postalCode?: string | null;
-  products?: (number | Product)[] | null;
+  products?: (number | ProductType)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productTypes".
+ */
+export interface ProductType {
+  id: number;
+  productName: string;
+  defaultImage?: (number | null) | Media;
+  locations?: {
+    docs?: (number | Location)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -967,6 +988,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'locations';
         value: number | Location;
+      } | null)
+    | ({
+        relationTo: 'productTypes';
+        value: number | ProductType;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1349,6 +1374,17 @@ export interface LocationsSelect<T extends boolean = true> {
   province?: T;
   postalCode?: T;
   products?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productTypes_select".
+ */
+export interface ProductTypesSelect<T extends boolean = true> {
+  productName?: T;
+  defaultImage?: T;
+  locations?: T;
   updatedAt?: T;
   createdAt?: T;
 }

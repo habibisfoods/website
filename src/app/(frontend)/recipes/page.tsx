@@ -4,6 +4,7 @@ import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import { Media } from '@/components/Media'
+import { CMSLink } from '@/components/Link'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
@@ -50,9 +51,14 @@ export default async function Page() {
             <div>
               <h2 className="text-3xl font-bold mb-2">{latestPost.title}</h2>
               <p className="text-gray-600 mb-4">{latestPost.meta?.description}</p>
-              <a href={`/posts/${latestPost.slug}`} className="text-blue-500 hover:underline">
-                How to Make It →
-              </a>
+              <CMSLink
+                type="custom"
+                url={`/posts/${latestPost.slug}`}
+                appearance="inline"
+                className="text-blue-500 hover:underline"
+              >
+                See How to Make it →
+              </CMSLink>
             </div>
             <div className="w-[500px] h-[500px] bg-gray-200 rounded-lg">
               {typeof latestPost?.meta?.image === 'object' && latestPost.meta.image && (

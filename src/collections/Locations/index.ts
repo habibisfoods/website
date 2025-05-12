@@ -56,7 +56,7 @@ export const Locations: CollectionConfig = {
       name: 'products',
       label: 'Products',
       type: 'relationship',
-      relationTo: 'products',
+      relationTo: 'productTypes',
       hasMany: true,
     },
   ],
