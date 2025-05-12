@@ -64,7 +64,7 @@ export default async function Page() {
               {typeof latestPost?.meta?.image === 'object' && latestPost.meta.image && (
                   <Media
                     resource={latestPost.meta.image}
-                    className="w-full h-full object-cover rounded-xl mb-6"
+                    className="w-full h-full object-cover rounded-xl"
                   />
               )}
             </div>
