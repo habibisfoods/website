@@ -15,7 +15,7 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products?limit=2000`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/productTypes?limit=2000`);
                 const data = await response.json();
                 const productNames = data.docs.map((item: any) => item.productName);
                 // console.log(data.docs);

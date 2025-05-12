@@ -66,7 +66,7 @@ export default function StoreFinderPage() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products?limit=2000`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/productTypes?limit=2000`);
       const data = await res.json();
       setProducts(data.docs); 
     };

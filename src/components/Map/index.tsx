@@ -22,7 +22,7 @@ interface MapComponentProps {
 function plotPoints(locations: any, currentMap: any, markers: any) {
   locations.forEach((loc: any) => {
     const address = `${loc.parentStore}, ${loc.address}, ${loc.city}, ${loc.province}`;
-    console.log(loc);
+    //console.log(loc);
 
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
       .then(res => res.json())
@@ -89,10 +89,13 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedItem, s
      useEffect(() => {
     const plotFilteredMarkers = async () => {
       if (!selectedItem || !mapRef.current) return;
-
-      const selectedProduct = products.find((p: any) => p.productName === selectedItem);
+      
+      const selectedProduct = products.find((p: any) => p.productName === selectedItem );
+      
+     
       const selectedProductId = selectedProduct?.id;
       if (!selectedProductId) return;
+      
 
       const query = new URLSearchParams({
         'where[products][in]': selectedProductId, 'limit': '2000'
