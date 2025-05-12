@@ -61,11 +61,11 @@ export default async function Page() {
                 Read More →
               </CMSLink>
             </div>
-            <div className="w-[500px] h-[500px] bg-gray-200 rounded-lg">
+            <div className="relative w-[500px] h-[500px] bg-gray-200 rounded-lg">
               {typeof latestPost?.meta?.image === 'object' && latestPost.meta.image && (
                   <Media
                     resource={latestPost.meta.image}
-                    className="w-full h-full object-cover rounded-xl"
+                    imgClassName="absolute inset-0 w-full h-full object-cover rounded-xl"
                   />
               )}
             </div>
