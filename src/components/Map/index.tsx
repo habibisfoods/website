@@ -21,7 +21,8 @@ interface MapComponentProps {
 
 function plotPoints(locations: any, currentMap: any, markers: any) {
   locations.forEach((loc: any) => {
-    const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
+    const address = `${loc.parentStore}, ${loc.address}, ${loc.city}, ${loc.province}`;
+    console.log(loc);
 
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
       .then(res => res.json())
@@ -34,7 +35,7 @@ function plotPoints(locations: any, currentMap: any, markers: any) {
           .setLngLat([lng, lat])
           .setPopup(new mapboxgl.Popup().setHTML(`
               <div style="color: black;">
-                ${loc.store_name}<br/>
+                ${loc.parentStore}<br/>
                 ${loc.address}<br/>
                 ${loc.city}, ${loc.province}
               </div>
@@ -123,7 +124,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedItem, s
 
   useEffect(() => {
     if (selectedLocation && mapRef.current) {
-      const address = `${selectedLocation.FINAL_NAME}, ${selectedLocation.Address_by_ID}, ${selectedLocation.City_by_ID}, ${selectedLocation.Province}`;
+  const address = `${selectedLocation.parentStore}, ${selectedLocation.address}, ${selectedLocation.city}, ${selectedLocation.province}`;
 
       fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
         .then(res => res.json())

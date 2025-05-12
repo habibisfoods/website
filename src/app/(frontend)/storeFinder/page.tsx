@@ -68,7 +68,7 @@ export default function StoreFinderPage() {
     const fetchProducts = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products?limit=2000`);
       const data = await res.json();
-      setProducts(data.docs); // contains id + productName
+      setProducts(data.docs); 
     };
     fetchProducts();
   }, []);
@@ -114,7 +114,7 @@ export default function StoreFinderPage() {
               onClick={() => setSelectedLocation(location)}
               className="p-4 bg-gray-100 rounded shadow hover:bg-gray-200 transition duration-200"
             >
-              <h2 className="text-lg font-semibold">{location.store_name}</h2>
+              <h2 className="text-lg font-semibold">{location.parentStore}</h2>
               <p>{location.address}, {location.city}, {location.province}</p>
             </li>
           ))}
