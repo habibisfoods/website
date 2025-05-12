@@ -85,10 +85,8 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    products: {
-      locations: 'locations';
-    };
     productTypes: {
+      products: 'products';
       locations: 'locations';
     };
   };
@@ -748,7 +746,56 @@ export interface Form {
 export interface Product {
   id: number;
   productName: string;
-  productImage?: (number | null) | Media;
+  productImage?: (number | Media)[] | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  sizes?:
+    | {
+        amount: number;
+        unit: 'g' | 'kg' | 'pack';
+        id?: string | null;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  productType: number | ProductType;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productTypes".
+ */
+export interface ProductType {
+  id: number;
+  productName: string;
+  defaultImage?: (number | null) | Media;
+  products?: {
+    docs?: (number | Product)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   locations?: {
     docs?: (number | Location)[];
     hasNextPage?: boolean;
@@ -770,22 +817,6 @@ export interface Location {
   province: 'AB' | 'BC' | 'MB' | 'NB' | 'NL' | 'NS' | 'NT' | 'NU' | 'ON' | 'PE' | 'QC' | 'SK' | 'YT';
   postalCode?: string | null;
   products?: (number | ProductType)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "productTypes".
- */
-export interface ProductType {
-  id: number;
-  productName: string;
-  defaultImage?: (number | null) | Media;
-  locations?: {
-    docs?: (number | Location)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1358,7 +1389,24 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   productName?: T;
   productImage?: T;
-  locations?: T;
+  description?: T;
+  sizes?:
+    | T
+    | {
+        amount?: T;
+        unit?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  productType?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1384,6 +1432,7 @@ export interface LocationsSelect<T extends boolean = true> {
 export interface ProductTypesSelect<T extends boolean = true> {
   productName?: T;
   defaultImage?: T;
+  products?: T;
   locations?: T;
   updatedAt?: T;
   createdAt?: T;

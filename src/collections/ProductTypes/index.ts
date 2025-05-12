@@ -28,6 +28,13 @@ export const ProductTypes: CollectionConfig = {
       relationTo: 'media',
     },
     {
+      name: 'products',
+      label: 'Products',
+      type: 'join',
+      collection: 'products',
+      on: 'productType',
+    },
+    {
       name: 'locations',
       label: 'Locations',
       type: 'join',
