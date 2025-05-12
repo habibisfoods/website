@@ -8,37 +8,7 @@ import { stringify } from "qs-esm";
 import { Where } from "payload";
 
 
-// FILTERING FUNCTION, UNUESD FOR NOW
-// const getProducts = async (item: string) => {
 
-//   let formattedLocations: string[];
-//   let locationOBJ: any;
-
-//   const product_query: Where = {
-//     'product_id.product_name': {
-//       equals: item,
-//     },
-//   }
-
-//   let stringifiedQuery = stringify(
-//     {
-//       where: product_query,
-//     },
-//     { addQueryPrefix: true },
-//   )
-
-//   const product_response = await fetch(
-//     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/product_availability${stringifiedQuery}`,
-//   );
-
-//   const product_data = await product_response.json();
-//   locationOBJ = product_data.docs;
-
-//   formattedLocations = locationOBJ.map(
-//     (loc: any) => `${loc.location_id.FINAL_NAME}, ${loc.location_id.Address_by_ID}, ${loc.location_id.City_by_ID}, ${loc.location_id.Province}`
-//   );
-//   
-// }
 
 interface MapComponentProps {
   userCoords: [number, number] | null;
@@ -50,14 +20,7 @@ interface MapComponentProps {
 
 function plotPoints(locations: any, currentMap: any, markers: any) {
   locations.forEach((loc: any) => {
-    let address: string = "";
-    let marker: Marker;
-
-    if (!loc.product_id) {
-      address = `${loc.FINAL_NAME}, ${loc.Address_by_ID}, ${loc.City_by_ID}, ${loc.Province}`;
-    } else {
-      address = `${loc.location_id.FINAL_NAME}, ${loc.location_id.Address_by_ID}, ${loc.location_id.City_by_ID}, ${loc.location_id.Province}`;
-    }
+    const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
 
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
       .then(res => res.json())
@@ -66,30 +29,16 @@ function plotPoints(locations: any, currentMap: any, markers: any) {
 
         const [lng, lat] = geo.features[0].geometry.coordinates;
 
-        if (!loc.product_id) {
-          marker = new mapboxgl.Marker()
-            .setLngLat([lng, lat])
-            .setPopup(new mapboxgl.Popup().setHTML(`
-                  <div style="color: black;">
-                    ${loc.FINAL_NAME}<br/>
-                    ${loc.Address_by_ID}<br/>
-                    ${loc.City_by_ID}, ${loc.Province}
-                  </div>
-                `))
-            .addTo(currentMap);
-        } else {
-          marker = new mapboxgl.Marker()
-            .setLngLat([lng, lat])
-            .setPopup(new mapboxgl.Popup().setHTML(`
-                  <div style="color: black;">
-                    ${loc.location_id.FINAL_NAME}<br/>
-                    ${loc.location_id.Address_by_ID}<br/>
-                    ${loc.location_id.City_by_ID}, ${loc.location_id.Province}
-                  </div>
-                `))
-            .addTo(currentMap);
-        }
-
+        const marker = new mapboxgl.Marker()
+          .setLngLat([lng, lat])
+          .setPopup(new mapboxgl.Popup().setHTML(`
+              <div style="color: black;">
+                ${loc.store_name}<br/>
+                ${loc.address}<br/>
+                ${loc.city}, ${loc.province}
+              </div>
+            `))
+          .addTo(currentMap);
 
         markers.current.push(marker);
       });
@@ -117,13 +66,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedItem, s
       const plotMarkers = async () => {
         if (!selectedItem) return;
 
-        const query: Where = {
-          'product_id.product_name': { equals: selectedItem }
-        };
+        const query = new URLSearchParams({ 'where[product_id.product_name][equals]': selectedItem }).toString();
 
-        const stringifiedQuery = stringify({ where: query }, { addQueryPrefix: true });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/product_availability${stringifiedQuery}`);
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/product_availability${query}`);
         const data = await response.json();
         const locations = data.docs;
 
