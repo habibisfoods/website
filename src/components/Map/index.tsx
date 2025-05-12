@@ -16,6 +16,7 @@ interface MapComponentProps {
   selectedLocation: any | null;
   locationList: any | null;
   setLocationList: any | null;
+  products: any[];
 }
 
 function plotPoints(locations: any, currentMap: any, markers: any) {
@@ -45,7 +46,7 @@ function plotPoints(locations: any, currentMap: any, markers: any) {
   });
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedItem, selectedLocation, locationList, setLocationList }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedItem, selectedLocation, locationList, setLocationList, products}) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   let markers = useRef<mapboxgl.Marker[]>([]);
@@ -63,53 +64,54 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedItem, s
 
       mapRef.current = map;
 
-      const plotMarkers = async () => {
-        if (!selectedItem) return;
-
-        const query = new URLSearchParams({ 'where[product_id.product_name][equals]': selectedItem }).toString();
-
-
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/product_availability${query}`);
-        const data = await response.json();
-        const locations = data.docs;
-
-
-
-        //look here
-        setLocationList(locations.map((loc: any) => loc.location_id));
-
-
-
-
-        markers.current.forEach(marker => marker.remove());
-        plotPoints(locations, map, markers)
-      };
-
-      plotMarkers();
-
-      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?limit=1000`)
-        .then((res) => res.json())
-        .then((data) => {
-          markers.current.forEach(marker => marker.remove());
-          const locations = data.docs;
-          plotPoints(locations, map, markers)
-
-          //fullscreen 
-          map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector('body') }));
-
-          // Add zoom controls
-          map.addControl(new mapboxgl.NavigationControl(), "top-left");
-
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?limit=2000`)
+        .then(res => res.json())
+        .then(data => {
+          plotPoints(data.docs, map, markers);
         });
 
-      // Clean up on unmount
+     
+      map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector('body')! }));
+      map.addControl(new mapboxgl.NavigationControl(), "top-left");
+
+     
       return () => {
         map.remove();
         mapRef.current = null;
       };
     }
-  }, [selectedItem]);
+  }, []);
+    
+
+      
+
+     useEffect(() => {
+    const plotFilteredMarkers = async () => {
+      if (!selectedItem || !mapRef.current) return;
+
+      const selectedProduct = products.find((p: any) => p.productName === selectedItem);
+      const selectedProductId = selectedProduct?.id;
+      if (!selectedProductId) return;
+
+      const query = new URLSearchParams({
+        'where[products][in]': selectedProductId, 'limit': '2000'
+      }).toString();
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?${query}`);
+      const data = await response.json();
+      const locations = data.docs;
+
+      setLocationList(locations);
+
+    
+      markers.current.forEach(marker => marker.remove());
+      markers.current = [];
+
+      plotPoints(locations, mapRef.current, markers);
+    };
+
+    plotFilteredMarkers();
+  }, [selectedItem, products]);
 
 
   useEffect(() => {

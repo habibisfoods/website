@@ -16,6 +16,7 @@ export default function StoreFinderPage() {
   const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
   const [kmRadius, setKmRadius] = useState(0);
   const [locationList, setLocationList] = useState<any[]>([]);
+  const [products , setProducts] = useState<any[]>([]);
 
   const handleSearchStores = async () => {
     if (searchStores.length === 0) return;
@@ -53,7 +54,7 @@ export default function StoreFinderPage() {
   };
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?limit=1000`)
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?limit=2000`)
       .then((res) => res.json())
       .then((data) => {
         setLocations(data.docs);
@@ -61,6 +62,15 @@ export default function StoreFinderPage() {
       .catch((error) => {
         console.error('Error fetching locations:', error);
       });
+  }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products?limit=2000`);
+      const data = await res.json();
+      setProducts(data.docs); // contains id + productName
+    };
+    fetchProducts();
   }, []);
 
   const listToDisplay = locationList.length > 0 ? locationList : filteredLocations.length > 0 ? filteredLocations : locations;
@@ -119,6 +129,7 @@ export default function StoreFinderPage() {
             selectedLocation={selectedLocation}
             locationList={locationList}
             setLocationList={setLocationList}
+            products={products}
           />
         </div>
       </div>
