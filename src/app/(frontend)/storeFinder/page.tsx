@@ -127,7 +127,12 @@ export default function StoreFinderPage() {
             selectedItem={selectedItem}
             selectedLocation={selectedLocation}
             products={products}
-            setLocations={setLocations}
+            setLocations={(locs: any[]) => {
+              setFilteredLocations([]);
+              setLocationList([]);
+              setLocations(locs);
+            }}
+
           />
         </div>
       </div>
