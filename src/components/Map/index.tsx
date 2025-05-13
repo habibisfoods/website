@@ -4,12 +4,6 @@ import React, { useEffect, useRef } from "react";
 import mapboxgl, { GeoJSONSource, Marker } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { stringify } from "qs-esm";
-import { Where } from "payload";
-
-
-
-
 interface MapComponentProps {
   userCoords: [number, number] | null;
   selectedItem: string | null;
@@ -21,7 +15,6 @@ interface MapComponentProps {
 function plotPoints(locations: any, currentMap: any, markers: any) {
   locations.forEach((loc: any) => {
     const address = `${loc.address}, ${loc.city}, ${loc.province}`;
-    //console.log(loc);
 
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
       .then(res => res.json())
@@ -30,13 +23,17 @@ function plotPoints(locations: any, currentMap: any, markers: any) {
 
         const [lng, lat] = geo.features[0].geometry.coordinates;
 
+        const googleMapsQuery = `${loc.address.trim().replace(/\s+/g, '+')},+${loc.city.trim().replace(/\s+/g, '+')},+${loc.province.trim().replace(/\s+/g, '+')}`;
+        const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=' + googleMapsQuery;
+
         const marker = new mapboxgl.Marker()
           .setLngLat([lng, lat])
           .setPopup(new mapboxgl.Popup().setHTML(`
               <div style="color: black;">
                 ${loc.storeName}<br/>
                 ${loc.address}<br/>
-                ${loc.city}, ${loc.province}
+                ${loc.city}, ${loc.province} <br/>
+                <a href=\'${googleMapsLink}\' target=\'_blank\'>Get Directions</a>
               </div>
             `))
           .addTo(currentMap);
