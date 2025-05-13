@@ -114,7 +114,7 @@ export default function StoreFinderPage() {
               onClick={() => setSelectedLocation(location)}
               className="p-4 bg-gray-100 rounded shadow hover:bg-gray-200 transition duration-200"
             >
-              <h2 className="text-lg font-semibold">{location.parentStore}</h2>
+              <h2 className="text-lg font-semibold">{location.storeName}</h2>
               <p>{location.address}, {location.city}, {location.province}</p>
             </li>
           ))}

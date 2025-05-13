@@ -21,7 +21,7 @@ interface MapComponentProps {
 
 function plotPoints(locations: any, currentMap: any, markers: any) {
   locations.forEach((loc: any) => {
-    const address = `${loc.parentStore}, ${loc.address}, ${loc.city}, ${loc.province}`;
+    const address = `${loc.address}, ${loc.city}, ${loc.province}`;
     //console.log(loc);
 
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
@@ -35,7 +35,7 @@ function plotPoints(locations: any, currentMap: any, markers: any) {
           .setLngLat([lng, lat])
           .setPopup(new mapboxgl.Popup().setHTML(`
               <div style="color: black;">
-                ${loc.parentStore}<br/>
+                ${loc.storeName}<br/>
                 ${loc.address}<br/>
                 ${loc.city}, ${loc.province}
               </div>
