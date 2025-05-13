@@ -20,7 +20,6 @@ export default function StoreFinderPage() {
 
   const handleSearchStores = async () => {
     if (searchStores.length === 0) return;
-
     const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchStores)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`);
     const data = await res.json();
 
@@ -127,9 +126,8 @@ export default function StoreFinderPage() {
             userCoords={userCoords}
             selectedItem={selectedItem}
             selectedLocation={selectedLocation}
-            locationList={locationList}
-            setLocationList={setLocationList}
             products={products}
+            setLocations={setLocations}
           />
         </div>
       </div>
