@@ -17,19 +17,28 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
 
-import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
+import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 
 export const Products: CollectionConfig = {
   slug: 'products',
   admin: {
     useAsTitle: 'productName',
+    defaultColumns: ['productName', 'productImage', 'productType', 'slug'],
   },
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: authenticatedOrPublished,
     update: authenticated,
+  },
+  defaultPopulate: {
+    productName: true,
+    slug: true,
+    meta: {
+      image: true,
+      description: true,
+    },
   },
   fields: [
     {
@@ -115,13 +124,36 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-    ...slugField(),
+    {
+      name: 'publishedAt',
+      type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+        position: 'sidebar',
+      },
+      hooks: {
+        beforeChange: [
+          ({ siblingData, value }) => {
+            if (siblingData._status === 'published' && !value) {
+              return new Date()
+            }
+            return value
+          },
+        ],
+      },
+    },
     {
       name: 'productType',
       label: 'Product Type',
       type: 'relationship',
       relationTo: 'productTypes',
       required: true,
+      admin: {
+        position: 'sidebar',
+      },
     },
+    ...slugField(),
   ],
 }

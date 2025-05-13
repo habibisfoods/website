@@ -20,6 +20,7 @@ export const Locations: CollectionConfig = {
       label: 'Parent Store',
       type: 'text',
       required: true,
+      hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
     },
     {
       name: 'storeName',
@@ -27,18 +28,21 @@ export const Locations: CollectionConfig = {
       type: 'text',
       unique: true,
       required: true,
+      hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
     },
     {
       name: 'address',
       label: 'Address',
       type: 'text',
       required: true,
+      hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
     },
     {
       name: 'city',
       label: 'City',
       type: 'text',
       required: true,
+      hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
     },
     {
       name: 'province',
@@ -51,6 +55,7 @@ export const Locations: CollectionConfig = {
       name: 'postalCode',
       label: 'Postal Code',
       type: 'text',
+      hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
     },
     {
       name: 'products',

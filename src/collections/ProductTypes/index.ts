@@ -2,11 +2,16 @@ import { CollectionConfig } from 'payload'
 
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
+import { slugField } from '@/fields/slug'
 
 export const ProductTypes: CollectionConfig = {
   slug: 'productTypes',
+  defaultPopulate: {
+    slug: true,
+  },
   admin: {
     useAsTitle: 'productName',
+    defaultColumns: ['productName', 'defaultImage'],
   },
   access: {
     create: authenticated,
@@ -41,5 +46,6 @@ export const ProductTypes: CollectionConfig = {
       collection: 'locations',
       on: 'products',
     },
+    ...slugField(),
   ],
 }
