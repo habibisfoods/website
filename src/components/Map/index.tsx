@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import mapboxgl, { GeoJSONSource, Marker } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -51,6 +51,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   let markers = useRef<mapboxgl.Marker[]>([]);
+  const [locationObj, setLocationObj] = useState<any[] | null>(null)
+
+
 
   // STARTUP USE EFFECT, RUNS ONCE
   useEffect(() => {
@@ -66,6 +69,15 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
 
       mapRef.current = map;
 
+      // ONLY TIME DATABASE IS QUERIED
+      fetchAllLocations().then(locationsObj => {
+        console.log("Fetching locations from database");
+        console.log(locationsObj);
+        setLocationObj(locationsObj);
+        plotPoints(locationsObj, mapRef.current, markers);
+      });
+
+
       map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector('body')! }));
       map.addControl(new mapboxgl.NavigationControl(), "top-left");
 
@@ -75,31 +87,42 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
         mapRef.current = null;
       };
     }
-  }, []);
+  }, [setLocationObj]);
 
 
   // ITEM FILTER USE EFFECT, ONLY RUNS WHEN ITEM FILTER IS USED
   useEffect(() => {
     const plotFilteredMarkers = async () => {
-      if (!mapRef.current) return;
+      if (!mapRef.current || !locationObj) return;
 
       if (!selectedItem) {
-        fetchAllLocations().then(locations => {
-          plotPoints(locations, mapRef.current, markers);
-        });
+        console.log(locationObj);
+        plotPoints(locationObj, mapRef.current, markers);
       }
 
 
       const selectedProduct = products.find((p: any) => p.productName === selectedItem);
       const selectedProductId = selectedProduct?.id;
       if (!selectedProductId) return;
-      const query = new URLSearchParams({
-        'where[products][in]': selectedProductId, 'limit': '2000'
-      }).toString();
+      // const query = new URLSearchParams({
+      //   'where[products][in]': selectedProductId, 'limit': '2000'
+      // }).toString();
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?${query}`);
-      const data = await response.json();
-      const locations = data.docs;
+      // const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?${query}`);
+      // const data = await response.json();
+      // const locations = data.docs;
+
+      //----
+      let locations: any[] = [];
+
+      locationObj.forEach((location) => {
+        location.products.forEach((product: any) => {
+          if (product.id === selectedProductId) {
+            locations.push(location);
+          }
+        });
+      });
+      //----
 
       setLocations(locations);
 
