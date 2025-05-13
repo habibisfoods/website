@@ -15,7 +15,6 @@ interface MapComponentProps {
 function plotPoints(locations: any, currentMap: any, markers: any) {
   locations.forEach((loc: any) => {
     const address = `${loc.address}, ${loc.city}, ${loc.province}`;
-    //console.log(loc);
 
     fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
       .then(res => res.json())
@@ -55,7 +54,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
 
   // STARTUP USE EFFECT, RUNS ONCE
   useEffect(() => {
-    console.log("we run all location fetches")
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
     if (mapContainer.current) {
@@ -116,7 +114,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
   }, [selectedItem, products]);
 
 
-  // NOT SURE WHAT THIS DOES
+  // MOVES CAMERA WHEN SEARCHED BUTTON IS PRESSED
   useEffect(() => {
     if (userCoords && mapRef.current) {
       mapRef.current.flyTo({ center: userCoords, zoom: 12 });
