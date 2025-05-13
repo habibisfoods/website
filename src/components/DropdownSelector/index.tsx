@@ -18,8 +18,6 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/productTypes?limit=2000`);
                 const data = await response.json();
                 const productNames = data.docs.map((item: any) => item.productName);
-                // console.log(data.docs);
-                // console.log(productNames);
                 setItems(productNames);
             } catch (error) {
                 console.error('Error fetching items:', error);
@@ -33,8 +31,8 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
         <div>
             <label htmlFor="dropdown">Select an item:</label>
             <select id="dropdown" value={selectedItem} onChange={handleChange}>
-                <option value="" disabled>
-                    -- Select an option --
+                <option value="">
+                    None
                 </option>
                 {items.map((item, index) => (
                     <option key={index} value={item}>
