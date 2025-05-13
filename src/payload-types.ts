@@ -777,9 +777,10 @@ export interface Product {
     image?: (number | null) | Media;
     description?: string | null;
   };
+  publishedAt?: string | null;
+  productType: number | ProductType;
   slug?: string | null;
   slugLock?: boolean | null;
-  productType: number | ProductType;
   updatedAt: string;
   createdAt: string;
 }
@@ -801,6 +802,8 @@ export interface ProductType {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  slug?: string | null;
+  slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1404,9 +1407,10 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
+  publishedAt?: T;
+  productType?: T;
   slug?: T;
   slugLock?: T;
-  productType?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1434,6 +1438,8 @@ export interface ProductTypesSelect<T extends boolean = true> {
   defaultImage?: T;
   products?: T;
   locations?: T;
+  slug?: T;
+  slugLock?: T;
   updatedAt?: T;
   createdAt?: T;
 }
