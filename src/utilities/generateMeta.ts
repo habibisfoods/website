@@ -27,8 +27,8 @@ export const generateMeta = async (args: {
   const ogImage = getImageURL(doc?.meta?.image)
 
   const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Habibis Mediterranean Foods'
-    : 'Habibis Mediterranean Foods'
+    ? doc?.meta?.title + " | Habibi's Mediterranean Foods"
+    : "Habibi's Mediterranean Foods"
 
   return {
     description: doc?.meta?.description,

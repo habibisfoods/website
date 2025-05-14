@@ -3,10 +3,11 @@ import { CollectionConfig } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 
-export const ProductTypes: CollectionConfig = {
+export const ProductTypes: CollectionConfig<'productTypes'> = {
   slug: 'productTypes',
   admin: {
-    useAsTitle: 'productName',
+    useAsTitle: 'productType',
+    defaultColumns: ['productType', 'defaultImage'],
   },
   access: {
     create: authenticated,
@@ -16,8 +17,8 @@ export const ProductTypes: CollectionConfig = {
   },
   fields: [
     {
-      name: 'productName',
-      label: 'Product Name',
+      name: 'productType',
+      label: 'Product Type',
       type: 'text',
       unique: true,
       required: true,
