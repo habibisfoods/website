@@ -1,20 +1,18 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import mapboxgl, { GeoJSONSource, Marker } from "mapbox-gl";
+import React, { useEffect, useRef } from "react";
+import mapboxgl, { Marker } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 interface MapComponentProps {
   userCoords: [number, number] | null;
-  selectedItem: string | null;
   selectedLocation: any | null;
-  products: any[];
-  setLocations: any;
+  locations: any[];
 }
 
-function plotPoints(locations: any, currentMap: any, markers: any) {
-
+function plotPoints(locations: any[], currentMap: any, markers: any) {
   if (!locations || locations.length === 0) return;
+
   locations.forEach((loc: any) => {
     const address = `${loc.address}, ${loc.city}, ${loc.province}`;
 
@@ -45,24 +43,14 @@ function plotPoints(locations: any, currentMap: any, markers: any) {
   });
 }
 
-async function fetchAllLocations() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?limit=2000`);
-  const data = await res.json();
-  return data.docs;
-}
-
-
-const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, selectedItem, selectedLocation, products }) => {
-
-  // GLOBAL MAP COMPONENT VARIABLES
+const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedLocation, locations }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  let markers = useRef<mapboxgl.Marker[]>([]);
-  const [locationObj, setLocationObj] = useState<any[] | null>(null)
+  const markers = useRef<Marker[]>([]);
 
-  // STARTUP USE EFFECT, RUNS ONCE
+  // Initialize map once on startup
   useEffect(() => {
-    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!;
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -75,19 +63,10 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
         });
 
         mapRef.current = map;
-
-        // ONLY TIME DATABASE IS QUERIED
-        fetchAllLocations().then((locationsObj) => {
-          setLocationObj(locationsObj);
-          plotPoints(locationsObj, mapRef.current, markers);
-
-          map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector('body')! }));
-          map.addControl(new mapboxgl.NavigationControl(), "top-left");
-        });
+        map.addControl(new mapboxgl.FullscreenControl({ container: document.body }));
+        map.addControl(new mapboxgl.NavigationControl(), "top-left");
       },
-      (error) => {
-        console.error("Error getting location:", error);
-
+      () => {
         const map = new mapboxgl.Map({
           container: mapContainer.current!,
           center: [-123.1207, 49.2827],
@@ -96,87 +75,33 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
         });
 
         mapRef.current = map;
-
-        fetchAllLocations().then((locationsObj) => {
-          setLocationObj(locationsObj);
-          plotPoints(locationsObj, mapRef.current, markers);
-        });
-
-        map.addControl(new mapboxgl.FullscreenControl({ container: document.querySelector('body')! }));
+        map.addControl(new mapboxgl.FullscreenControl({ container: document.body }));
         map.addControl(new mapboxgl.NavigationControl(), "top-left");
-
       },
-      {
-        enableHighAccuracy: true
-      }
+      { enableHighAccuracy: true }
     );
 
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
-    };
-  }, [setLocationObj]);
+    return () => mapRef.current?.remove();
+  }, []);
 
-
-
-
-
-
-
-  // ITEM FILTER USE EFFECT, ONLY RUNS WHEN ITEM FILTER IS USED
+  // Update markers whenever locations change
   useEffect(() => {
-    const plotFilteredMarkers = async () => {
-      if (!mapRef.current) return;
+    if (!mapRef.current) return;
 
-      if(!selectedItem) {
-        plotPoints(locationObj, mapRef.current, markers);
-      }
+    markers.current.forEach(marker => marker.remove());
+    markers.current = [];
 
-      const selectedProduct = products.find((p: any) => p.productType === selectedItem);
-      const selectedProductId = selectedProduct?.id;
-      if (!selectedProductId) return;
-      // const query = new URLSearchParams({
-      //   'where[products][in]': selectedProductId, 'limit': '2000'
-      // }).toString();
+    plotPoints(locations, mapRef.current, markers);
+  }, [locations]);
 
-      // const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?${query}`);
-      // const data = await response.json();
-      // const locations = data.docs;
-
-      //----
-      let locations: any[] = [];
-
-      locationObj?.forEach((location) => {
-        location.products.forEach((product: any) => {
-          if (product.id === selectedProductId) {
-            locations.push(location);
-          }
-        });
-      });
-      //----
-
-      setLocations(locations);
-
-
-      markers.current.forEach(marker => marker.remove());
-      markers.current = [];
-
-      plotPoints(locations, mapRef.current, markers);
-    };
-
-    plotFilteredMarkers();
-  }, [selectedItem, products]);
-
-// MOVES CAMERA WHEN SEARCHED BUTTON IS PRESSED
+  // Moves map camera when userCoords updates
   useEffect(() => {
     if (userCoords && mapRef.current) {
       mapRef.current.flyTo({ center: userCoords, zoom: 12 });
     }
   }, [userCoords]);
 
-  // TRIGGERS WHEN A LOCATION IS SELECTED ON THE LEFT PANEL
+  // Focus on selected location marker
   useEffect(() => {
     if (selectedLocation && mapRef.current) {
       const address = `${selectedLocation.parentStore}, ${selectedLocation.address}, ${selectedLocation.city}, ${selectedLocation.province}`;
@@ -184,17 +109,13 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
       fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
         .then(res => res.json())
         .then(geo => {
-
           if (geo.features?.length) {
             const [lng, lat] = geo.features[0].geometry.coordinates;
-            mapRef.current?.flyTo({
-              center: [lng, lat],
-              zoom: 14
-            });
+            mapRef.current?.flyTo({ center: [lng, lat], zoom: 14 });
 
             const marker = markers.current.find(m => {
-              const markerLngLat = m.getLngLat();
-              return markerLngLat.lng === lng && markerLngLat.lat === lat;
+              const pos = m.getLngLat();
+              return pos.lng === lng && pos.lat === lat;
             });
             marker?.togglePopup();
           }
@@ -202,16 +123,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
     }
   }, [selectedLocation]);
 
-
   return (
-
-    <div
-      ref={mapContainer}
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    />
+    <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />
   );
 };
 

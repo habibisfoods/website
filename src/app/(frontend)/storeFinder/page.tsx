@@ -8,18 +8,19 @@ const MapComponent = dynamic(() => import("@/components/Map/index"));
 const DropdownSelector = dynamic(() => import("@/components/DropdownSelector/index"), { ssr: false });
 
 export default function StoreFinderPage() {
-  const [selectedItem, setSelectedItem] = useState('');
-  const [locations, setLocations] = useState<any[]>([]);
-  const [searchStores, setSearchStores] = useState('');
-  const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
+  const [allLocations, setAllLocations] = useState<any[]>([]);
+  //one filtered locaitons used now
   const [filteredLocations, setFilteredLocations] = useState<any[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [searchStores, setSearchStores] = useState('');
   const [kmRadius, setKmRadius] = useState(0);
-  const [locationList, setLocationList] = useState<any[]>([]);
-  const [products , setProducts] = useState<any[]>([]);
+  const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
 
   const handleSearchStores = async () => {
     if (searchStores.length === 0) return;
+
     const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchStores)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`);
     const data = await res.json();
 
@@ -27,36 +28,58 @@ export default function StoreFinderPage() {
       const coords: [number, number] = data.features[0].geometry.coordinates;
       setUserCoords(coords);
 
-      const originPoint = turf.point(coords);
-
-      const nearby = await Promise.all(
-        locations.map(async (loc) => {
-          const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
-          const geoRes = await fetch(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
-          );
-          const geoData = await geoRes.json();
-          if (!geoData.features?.length) return null;
-
-          const [lng, lat] = geoData.features[0].geometry.coordinates;
-          const dest = turf.point([lng, lat]);
-          const dist = turf.distance(originPoint, dest, { units: 'kilometers' });
-
-          return dist <= kmRadius ? loc : null;
-        })
-      );
-
-      setFilteredLocations(nearby.filter((loc) => loc !== null));
+      await applyFilters(coords);
     } else {
       console.log("No results found for the given location.");
     }
   };
+  
+
+  const applyFilters = async (searchCoords: [number, number] | null) => {
+  let radiusFiltered = allLocations;
+
+  if (searchCoords && kmRadius > 0) {
+    const originPoint = turf.point(searchCoords);
+    radiusFiltered = await Promise.all(allLocations.map(async (loc) => {
+      const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
+      const geoRes = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`);
+      const geoData = await geoRes.json();
+      if (!geoData.features?.length) return null;
+
+      const [lng, lat] = geoData.features[0].geometry.coordinates;
+      const dest = turf.point([lng, lat]);
+      const dist = turf.distance(originPoint, dest, { units: 'kilometers' });
+
+      return dist <= kmRadius ? loc : null;
+    }));
+
+    radiusFiltered = radiusFiltered.filter((loc) => loc !== null);
+  }
+
+  let finalFiltered = radiusFiltered;
+  if (selectedItem) {
+    const selectedProduct = products.find(p => p.productType === selectedItem);
+    if (selectedProduct) {
+      finalFiltered = radiusFiltered.filter(loc =>
+        loc.products.some((p: any) => p.id === selectedProduct.id)
+      );
+    }
+  }
+
+  setFilteredLocations(finalFiltered);
+};
+
+
+  useEffect(() => {
+    applyFilters(userCoords);
+  }, [selectedItem, allLocations, products, kmRadius]);
+
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?limit=2000`)
       .then((res) => res.json())
       .then((data) => {
-        setLocations(data.docs);
+        setAllLocations(data.docs);
       })
       .catch((error) => {
         console.error('Error fetching locations:', error);
@@ -72,7 +95,6 @@ export default function StoreFinderPage() {
     fetchProducts();
   }, []);
 
-  const listToDisplay = locationList.length > 0 ? locationList : filteredLocations.length > 0 ? filteredLocations : locations;
 
   return (
     <div className="flex h-screen">
@@ -107,7 +129,7 @@ export default function StoreFinderPage() {
         </button>
 
         <ul className="space-y-3 text-black">
-          {listToDisplay.map((location) => (
+          {filteredLocations.map((location) => (
             <li
               key={location.id}
               onClick={() => setSelectedLocation(location)}
@@ -123,17 +145,10 @@ export default function StoreFinderPage() {
       <div className="w-2/3 h-screen">
         <div className="w-full h-full">
           <MapComponent
-            userCoords={userCoords}
-            selectedItem={selectedItem}
-            selectedLocation={selectedLocation}
-            products={products}
-            setLocations={(locs: any[]) => {
-              setFilteredLocations([]);
-              setLocationList([]);
-              setLocations(locs);
-            }}
-
-          />
+          userCoords={userCoords}
+          selectedLocation={selectedLocation}
+          locations={filteredLocations} 
+        />
         </div>
       </div>
     </div>
