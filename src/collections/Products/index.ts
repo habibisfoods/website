@@ -18,6 +18,7 @@ import {
 import { slugField } from '@/fields/slug'
 
 import { authenticated } from '../../access/authenticated'
+import { anyone } from '../../access/anyone'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 
 export const Products: CollectionConfig<'products'> = {
@@ -29,7 +30,7 @@ export const Products: CollectionConfig<'products'> = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: anyone,
     update: authenticated,
   },
   fields: [
