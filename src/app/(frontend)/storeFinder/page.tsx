@@ -60,6 +60,10 @@ export default function StoreFinderPage() {
     }));
 
     radiusFiltered = radiusFiltered.filter((loc) => loc !== null);
+
+
+    
+
   } else if (searchCoords) {
     //get distance for everythign without km radius
     const originPoint = turf.point(searchCoords);
@@ -87,6 +91,18 @@ export default function StoreFinderPage() {
       );
     }
   }
+
+  finalFiltered = finalFiltered.map((loc) => {
+  const googleMapsQuery = `${loc.address.trim().replace(/\s+/g, '+')},+${loc.city.trim().replace(/\s+/g, '+')},+${loc.province.trim().replace(/\s+/g, '+')}`;
+  const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=' + googleMapsQuery;
+
+  return {
+    ...loc,
+    googleMapsLink,
+  };
+});
+    
+
 
   setFilteredLocations(finalFiltered);
 };
@@ -122,10 +138,10 @@ export default function StoreFinderPage() {
   return (
     <div className="flex h-screen">
       <div className="w-1/3 bg-white shadow-lg p-4 overflow-y-auto text-black">
-        
+        <div className="flex flex-col gap-4">
+          <DropdownSelector selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+        </div>
         <h1 className="text-2xl font-bold mb-4 text-gray-800">Find a Store</h1>
-
-        
 
         <input
           type="text"
@@ -151,10 +167,6 @@ export default function StoreFinderPage() {
           Search
         </button>
 
-        <div className="w-full p-2 mb-4 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
-          <DropdownSelector selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
-        </div>
-
         <ul className="space-y-3 text-black">
           {filteredLocations.map((location) => (
             <li
@@ -169,6 +181,13 @@ export default function StoreFinderPage() {
                 Distance: {location.distance} km
               </p>
           )}
+              <a
+                href={location.googleMapsLink} target="_blank" rel="noopener noreferrer" className="block text-blue-600 underline text-sm mt-1" onClick={(e) => {
+                  e.stopPropagation(); 
+                }}
+              >
+                Get Directions
+            </a>
             </li>
           ))}
         </ul>

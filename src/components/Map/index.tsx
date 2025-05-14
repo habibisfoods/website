@@ -25,17 +25,19 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
 
         const [lng, lat] = geo.features[0].geometry.coordinates;
 
-        const googleMapsQuery = `${loc.address.trim().replace(/\s+/g, '+')},+${loc.city.trim().replace(/\s+/g, '+')},+${loc.province.trim().replace(/\s+/g, '+')}`;
-        const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=' + googleMapsQuery;
-
-        const marker = new mapboxgl.Marker()
+        const marker = new mapboxgl.Marker({
+          color: "#FF0000",
+        })
           .setLngLat([lng, lat])
           .setPopup(new mapboxgl.Popup().setHTML(`
               <div style="color: black;">
-                ${loc.storeName}<br/>
+                <strong>${loc.storeName}</strong><br/>
                 ${loc.address}<br/>
                 ${loc.city}, ${loc.province} <br/>
-                <a href=\'${googleMapsLink}\' target=\'_blank\'>Get Directions</a>
+                <a 
+                href="${loc.googleMapsLink}" target="_blank" rel="noopener noreferrer" class="block text-blue-600 underline text-sm mt-1">
+                Get Directions
+                </a>  
               </div>
             `))
           .addTo(currentMap);
