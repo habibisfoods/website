@@ -91,7 +91,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedLocatio
 
   // Update markers whenever locations change
   useEffect(() => {
-    if (!mapRef.current) return;
+    // if (!mapRef.current) return;
 
     markers.current.forEach(marker => marker.remove());
     markers.current = [];

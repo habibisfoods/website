@@ -38,7 +38,7 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
                 onChange={handleChange}
                 className="px-4 py-2 rounded-2xl bg-white border border-gray-300 shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             >
-                <option value="">None</option>
+                <option value="">All</option>
                 {items.map((item, index) => (
                     <option key={index} value={item}>
                         {item}
