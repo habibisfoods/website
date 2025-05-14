@@ -35,7 +35,7 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
                 ${loc.address}<br/>
                 ${loc.city}, ${loc.province} <br/>
                 <a 
-                href="${loc.googleMapsLink}" target="_blank" rel="noopener noreferrer" class="block text-blue-600 underline text-sm mt-1">
+                href="${loc.googleMapsLink}" target="_blank" rel="noopener noreferrer" class="block text-blue-600 text-base font-semibold mt-1">
                 Get Directions
                 </a>  
               </div>

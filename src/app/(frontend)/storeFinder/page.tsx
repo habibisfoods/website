@@ -182,7 +182,7 @@ export default function StoreFinderPage() {
               </p>
           )}
               <a
-                href={location.googleMapsLink} target="_blank" rel="noopener noreferrer" className="block text-blue-600 underline text-sm mt-1" onClick={(e) => {
+                href={location.googleMapsLink} target="_blank" rel="noopener noreferrer" className="block text-blue-600 text-base font-semibold mt-1" onClick={(e) => {
                   e.stopPropagation(); 
                 }}
               >
