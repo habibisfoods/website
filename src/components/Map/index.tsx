@@ -3,11 +3,13 @@
 import React, { useEffect, useRef } from "react";
 import mapboxgl, { Marker } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { set } from "react-hook-form";
 
 interface MapComponentProps {
   userCoords: [number, number] | null;
   selectedLocation: any | null;
   locations: any[];
+  setUserCoords: (coords: [number, number]) => void; 
 }
 
 function plotPoints(locations: any[], currentMap: any, markers: any) {
@@ -43,7 +45,7 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
   });
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedLocation, locations }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedLocation, locations, setUserCoords }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<Marker[]>([]);
@@ -55,6 +57,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedLocatio
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
+
+        setUserCoords([longitude, latitude]);
+
         const map = new mapboxgl.Map({
           container: mapContainer.current!,
           center: [longitude, latitude],

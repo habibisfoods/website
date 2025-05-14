@@ -35,10 +35,33 @@ export default function StoreFinderPage() {
   };
   
 
-  const applyFilters = async (searchCoords: [number, number] | null) => {
+ const applyFilters = async (searchCoords: [number, number] | null) => {
   let radiusFiltered = allLocations;
 
   if (searchCoords && kmRadius > 0) {
+    const originPoint = turf.point(searchCoords);
+
+    radiusFiltered = await Promise.all(allLocations.map(async (loc) => {
+      const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
+      const geoRes = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`);
+      const geoData = await geoRes.json();
+      if (!geoData.features?.length) return null;
+
+      const [lng, lat] = geoData.features[0].geometry.coordinates;
+      const dest = turf.point([lng, lat]);
+      const dist = turf.distance(originPoint, dest, { units: 'kilometers' });
+
+      // adds distance to location object
+      if (dist <= kmRadius) {
+        return { ...loc, distance: dist.toFixed(2) };
+      } else {
+        return null;
+      }
+    }));
+
+    radiusFiltered = radiusFiltered.filter((loc) => loc !== null);
+  } else if (searchCoords) {
+    //get distance for everythign without km radius
     const originPoint = turf.point(searchCoords);
     radiusFiltered = await Promise.all(allLocations.map(async (loc) => {
       const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
@@ -50,12 +73,11 @@ export default function StoreFinderPage() {
       const dest = turf.point([lng, lat]);
       const dist = turf.distance(originPoint, dest, { units: 'kilometers' });
 
-      return dist <= kmRadius ? loc : null;
+      return { ...loc, distance: dist.toFixed(2) };
     }));
-
-    radiusFiltered = radiusFiltered.filter((loc) => loc !== null);
   }
 
+ 
   let finalFiltered = radiusFiltered;
   if (selectedItem) {
     const selectedProduct = products.find(p => p.productType === selectedItem);
@@ -68,6 +90,7 @@ export default function StoreFinderPage() {
 
   setFilteredLocations(finalFiltered);
 };
+
 
 
   useEffect(() => {
@@ -137,6 +160,11 @@ export default function StoreFinderPage() {
             >
               <h2 className="text-lg font-semibold">{location.storeName}</h2>
               <p>{location.address}, {location.city}, {location.province}</p>
+              {location.distance && (
+              <p className="text-sm text-gray-600">
+                Distance: {location.distance} km
+              </p>
+          )}
             </li>
           ))}
         </ul>
@@ -148,6 +176,7 @@ export default function StoreFinderPage() {
           userCoords={userCoords}
           selectedLocation={selectedLocation}
           locations={filteredLocations} 
+          setUserCoords={setUserCoords}
         />
         </div>
       </div>
