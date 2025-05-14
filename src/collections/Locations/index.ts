@@ -3,10 +3,11 @@ import { CollectionConfig } from 'payload'
 import { anyone } from '@/access/anyone'
 import { authenticated } from '@/access/authenticated'
 
-export const Locations: CollectionConfig = {
+export const Locations: CollectionConfig<'locations'> = {
   slug: 'locations',
   admin: {
     useAsTitle: 'storeName',
+    defaultColumns: ['storeName', 'parentStore', 'address', 'city', 'province'],
   },
   access: {
     create: authenticated,
@@ -55,7 +56,7 @@ export const Locations: CollectionConfig = {
       name: 'postalCode',
       label: 'Postal Code',
       type: 'text',
-      hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
+      hooks: { beforeValidate: [({ value }) => value?.trim().toUpperCase()] },
     },
     {
       name: 'products',

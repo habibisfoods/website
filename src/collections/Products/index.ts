@@ -20,11 +20,11 @@ import { slugField } from '@/fields/slug'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 
-export const Products: CollectionConfig = {
+export const Products: CollectionConfig<'products'> = {
   slug: 'products',
   admin: {
-    useAsTitle: 'productName',
-    defaultColumns: ['productName', 'productImage', 'productType', 'slug'],
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'productImage', 'productType', 'slug'],
   },
   access: {
     create: authenticated,
@@ -32,17 +32,9 @@ export const Products: CollectionConfig = {
     read: authenticatedOrPublished,
     update: authenticated,
   },
-  defaultPopulate: {
-    productName: true,
-    slug: true,
-    meta: {
-      image: true,
-      description: true,
-    },
-  },
   fields: [
     {
-      name: 'productName',
+      name: 'title',
       label: 'Product Name',
       type: 'text',
       unique: true,

@@ -745,7 +745,7 @@ export interface Form {
  */
 export interface Product {
   id: number;
-  productName: string;
+  title: string;
   productImage?: (number | Media)[] | null;
   description?: {
     root: {
@@ -790,7 +790,7 @@ export interface Product {
  */
 export interface ProductType {
   id: number;
-  productName: string;
+  productType: string;
   defaultImage?: (number | null) | Media;
   products?: {
     docs?: (number | Product)[];
@@ -802,8 +802,6 @@ export interface ProductType {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  slug?: string | null;
-  slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1390,7 +1388,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
-  productName?: T;
+  title?: T;
   productImage?: T;
   description?: T;
   sizes?:
@@ -1434,12 +1432,10 @@ export interface LocationsSelect<T extends boolean = true> {
  * via the `definition` "productTypes_select".
  */
 export interface ProductTypesSelect<T extends boolean = true> {
-  productName?: T;
+  productType?: T;
   defaultImage?: T;
   products?: T;
   locations?: T;
-  slug?: T;
-  slugLock?: T;
   updatedAt?: T;
   createdAt?: T;
 }
