@@ -13,6 +13,8 @@ interface MapComponentProps {
 }
 
 function plotPoints(locations: any, currentMap: any, markers: any) {
+
+  if (!locations || locations.length === 0) return;
   locations.forEach((loc: any) => {
     const address = `${loc.address}, ${loc.city}, ${loc.province}`;
 
@@ -132,7 +134,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, setLocations, s
         plotPoints(locationObj, mapRef.current, markers);
       }
 
-      const selectedProduct = products.find((p: any) => p.productName === selectedItem);
+      const selectedProduct = products.find((p: any) => p.productType === selectedItem);
       const selectedProductId = selectedProduct?.id;
       if (!selectedProductId) return;
       // const query = new URLSearchParams({

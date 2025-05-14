@@ -17,7 +17,7 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/productTypes?limit=2000`);
                 const data = await response.json();
-                const productNames = data.docs.map((item: any) => item.productName);
+                const productNames = data.docs.map((item: any) => item.productType);
                 setItems(productNames);
             } catch (error) {
                 console.error('Error fetching items:', error);
