@@ -9,11 +9,6 @@ const DropdownSelector = dynamic(() => import('@/components/DropdownSelector/ind
   ssr: false,
 })
 
-const SERVER_URL =
-  process.env.NODE_ENVIRONMENT === 'production'
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
-
 export default function StoreFinderPage() {
   const [allLocations, setAllLocations] = useState<any[]>([])
   //one filtered locaitons used now
@@ -123,7 +118,7 @@ export default function StoreFinderPage() {
   }, [selectedItem, allLocations, products])
 
   useEffect(() => {
-    fetch(`${SERVER_URL}/api/locations?limit=2000`)
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?limit=2000`)
       .then((res) => res.json())
       .then((data) => {
         setAllLocations(data.docs)
@@ -135,7 +130,7 @@ export default function StoreFinderPage() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch(`${SERVER_URL}/api/productTypes?limit=2000`)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/productTypes?limit=2000`)
       const data = await res.json()
       setProducts(data.docs)
     }
