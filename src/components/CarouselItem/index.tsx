@@ -17,7 +17,7 @@ export const CarouselItem: React.FC<{
   showProductTypes?: boolean
   title?: string
 }> = (props) => {
-  const { card, link } = useClickableCard({})
+  const { link } = useClickableCard({})
   const { className, doc, showProductTypes, title: titleFromProps } = props
 
   const { slug, meta, title, productType } = doc || {}
@@ -31,10 +31,9 @@ export const CarouselItem: React.FC<{
   return (
     <article
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
+        'border border-border rounded-lg overflow-hidden bg-orange-200 hover:cursor-pointer',
         className,
       )}
-      ref={card.ref}
     >
       {/* Image */}
       <div className="relative w-full ">
