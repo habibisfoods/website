@@ -9,7 +9,7 @@ interface MapComponentProps {
   userCoords: [number, number] | null;
   selectedLocation: any | null;
   locations: any[];
-  setUserCoords: (coords: [number, number]) => void; 
+  setUserCoords: (coords: [number, number]) => void;
 }
 
 function plotPoints(locations: any[], currentMap: any, markers: any) {
@@ -25,8 +25,32 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
 
         const [lng, lat] = geo.features[0].geometry.coordinates;
 
+        const el = document.createElement('div');
+        el.style.width = '30px';
+        el.style.height = '30px';
+        el.style.position = 'absolute';
+        el.style.display = 'flex';
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'center';
+        el.style.pointerEvents = 'auto'; 
+
+        const img = document.createElement('img');
+        img.src = '/favicon.svg';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        img.style.transition = 'transform 0.2s ease';
+        img.style.transformOrigin = 'center';
+
+    
+        img.addEventListener('mouseenter', () => img.style.transform = 'scale(1.2)');
+        img.addEventListener('mouseleave', () => img.style.transform = 'scale(1)');
+
+        el.appendChild(img);
+
         const marker = new mapboxgl.Marker({
-          color: "#FF0000",
+          element: el,
+          anchor: 'center', 
         })
           .setLngLat([lng, lat])
           .setPopup(new mapboxgl.Popup().setHTML(`
