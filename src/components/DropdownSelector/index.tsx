@@ -29,15 +29,19 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
 
     return (
         <div className="flex flex-col gap-2 w-full max-w-xs">
-            <label htmlFor="dropdown" className="text-sm font-medium text-gray-700">
+            {/* <label htmlFor="dropdown" className="text-sm font-medium text-gray-700">
                 Item Filter:
-            </label>
+            </label> */}
             <select
                 id="dropdown"
                 value={selectedItem}
                 onChange={handleChange}
-                className="px-4 py-2 rounded-2xl bg-white border border-gray-300 shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                
+                className="px-3 py-1 rounded-2xl bg-white border border-gray-300 shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             >
+                <option value="" disabled hidden>
+                    Products
+                </option>
                 <option value="">All</option>
                 {items.map((item, index) => (
                     <option key={index} value={item}>
