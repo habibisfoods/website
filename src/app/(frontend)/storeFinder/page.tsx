@@ -111,7 +111,7 @@ export default function StoreFinderPage() {
 
   useEffect(() => {
     applyFilters(userCoords);
-  }, [selectedItem, allLocations, products, kmRadius]);
+  }, [selectedItem, allLocations, products]);
 
 
   useEffect(() => {
