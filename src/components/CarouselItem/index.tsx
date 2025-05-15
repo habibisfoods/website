@@ -2,30 +2,31 @@
 import { cn } from '@/utilities/ui'
 import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
+import React from 'react'
 
 import type { Product } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
-export type CarouselItemPostData = Pick<Product, 'slug' | 'meta' | 'title' | 'productType'>
+export type CarouselItemPostData = Pick<Product, 'slug' | 'productType' | 'meta' | 'title'>
 
 export const CarouselItem: React.FC<{
   alignItems?: 'center'
   className?: string
-  doc?: CarouselItemPostData
-  relationTo?: 'products'
+  doc?: Product
   showProductTypes?: boolean
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showProductTypes, title: titleFromProps } = props
+  const { className, doc, showProductTypes, title: titleFromProps } = props
 
   const { slug, meta, title, productType } = doc || {}
   const { description, image: metaImage } = meta || {}
 
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`
+  const href = `/products/${slug}`
+  const productTypeTitle = typeof productType === 'object' ? productType.productType : ''
 
   return (
     <article
@@ -44,8 +45,8 @@ export const CarouselItem: React.FC<{
       {/* Content */}
       <div className="p-4">
         {/* Product Type */}
-        {showProductTypes && typeof productType !== 'number' && productType && (
-          <div className="uppercase text-sm mb-4">{productType.productType}</div>
+        {showProductTypes && productType && (
+          <div className="uppercase text-sm mb-4">{productTypeTitle}</div>
         )}
 
         {/* Title */}

@@ -1,28 +1,26 @@
 import { cn } from '@/utilities/ui'
 import React from 'react'
 
-import Carousel from 'react-multi-carousel'
-import 'react-multi-carousel/lib/styles.css'
+import { CarouselItem } from '@/components/CarouselItem'
+import { Product } from '@/payload-types'
 
-import { CarouselItem, CarouselItemPostData } from './CarouselItem'
-
-const responsive = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-}
+// const responsive: ResponsiveType = {
+//   desktop: {
+//     breakpoint: { max: 3000, min: 1024 },
+//     items: 3,
+//   },
+//   tablet: {
+//     breakpoint: { max: 1024, min: 464 },
+//     items: 2,
+//   },
+//   mobile: {
+//     breakpoint: { max: 464, min: 0 },
+//     items: 1,
+//   },
+// }
 
 export type Props = {
-  products: CarouselItemPostData[]
+  products: Product[]
 }
 
 export const ProductCarousel: React.FC<Props> = (props) => {
@@ -30,22 +28,19 @@ export const ProductCarousel: React.FC<Props> = (props) => {
 
   return (
     <div className={cn('container')}>
-      <Carousel responsive={responsive}>
+      <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-y-4 gap-x-4 lg:gap-y-8 lg:gap-x-8 xl:gap-x-8">
         {products?.map((result, index) => {
           if (typeof result === 'object' && result !== null) {
             return (
               <div className="col-span-4" key={index}>
-                <CarouselItem
-                  className="h-full"
-                  doc={result}
-                  relationTo="products"
-                  showProductTypes
-                />
+                <CarouselItem className="h-full" doc={result} showProductTypes />
               </div>
             )
           }
+
+          return null
         })}
-      </Carousel>
+      </div>
     </div>
   )
 }
