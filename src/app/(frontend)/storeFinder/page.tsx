@@ -155,6 +155,7 @@ export default function StoreFinderPage() {
         <input
           type="number"
           placeholder="Set Radius"
+          min="0"
           value={kmRadius}
           onChange={(e) => setKmRadius(Number(e.target.value))}
           className="w-full p-2 border border-grey-300 rounded mb-4 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
