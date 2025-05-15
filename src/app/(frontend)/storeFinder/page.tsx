@@ -14,7 +14,7 @@ export default function StoreFinderPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState('');
   const [searchStores, setSearchStores] = useState('');
-  const [kmRadius, setKmRadius] = useState(0);
+  const [kmRadius, setKmRadius] = useState('');
   const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
 
@@ -33,79 +33,79 @@ export default function StoreFinderPage() {
       console.log("No results found for the given location.");
     }
   };
-  
 
- const applyFilters = async (searchCoords: [number, number] | null) => {
-  let radiusFiltered = allLocations;
 
-  if (searchCoords && kmRadius > 0) {
-    const originPoint = turf.point(searchCoords);
+  const applyFilters = async (searchCoords: [number, number] | null) => {
+    let radiusFiltered = allLocations;
 
-    radiusFiltered = await Promise.all(allLocations.map(async (loc) => {
-      const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
-      const geoRes = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`);
-      const geoData = await geoRes.json();
-      if (!geoData.features?.length) return null;
+    if (searchCoords && Number(kmRadius) > 0) {
+      const originPoint = turf.point(searchCoords);
 
-      const [lng, lat] = geoData.features[0].geometry.coordinates;
-      const dest = turf.point([lng, lat]);
-      const dist = turf.distance(originPoint, dest, { units: 'kilometers' });
+      radiusFiltered = await Promise.all(allLocations.map(async (loc) => {
+        const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
+        const geoRes = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`);
+        const geoData = await geoRes.json();
+        if (!geoData.features?.length) return null;
 
-      // adds distance to location object
-      if (dist <= kmRadius) {
+        const [lng, lat] = geoData.features[0].geometry.coordinates;
+        const dest = turf.point([lng, lat]);
+        const dist = turf.distance(originPoint, dest, { units: 'kilometers' });
+
+        // adds distance to location object
+        if (dist <= Number(kmRadius)) {
+          return { ...loc, distance: dist.toFixed(2) };
+        } else {
+          return null;
+        }
+      }));
+
+      radiusFiltered = radiusFiltered.filter((loc) => loc !== null);
+
+
+
+
+    } else if (searchCoords) {
+      //get distance for everythign without km radius
+      const originPoint = turf.point(searchCoords);
+      radiusFiltered = await Promise.all(allLocations.map(async (loc) => {
+        const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
+        const geoRes = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`);
+        const geoData = await geoRes.json();
+        if (!geoData.features?.length) return null;
+
+        const [lng, lat] = geoData.features[0].geometry.coordinates;
+        const dest = turf.point([lng, lat]);
+        const dist = turf.distance(originPoint, dest, { units: 'kilometers' });
+
         return { ...loc, distance: dist.toFixed(2) };
-      } else {
-        return null;
-      }
-    }));
-
-    radiusFiltered = radiusFiltered.filter((loc) => loc !== null);
-
-
-    
-
-  } else if (searchCoords) {
-    //get distance for everythign without km radius
-    const originPoint = turf.point(searchCoords);
-    radiusFiltered = await Promise.all(allLocations.map(async (loc) => {
-      const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`;
-      const geoRes = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`);
-      const geoData = await geoRes.json();
-      if (!geoData.features?.length) return null;
-
-      const [lng, lat] = geoData.features[0].geometry.coordinates;
-      const dest = turf.point([lng, lat]);
-      const dist = turf.distance(originPoint, dest, { units: 'kilometers' });
-
-      return { ...loc, distance: dist.toFixed(2) };
-    }));
-  }
-
- 
-  let finalFiltered = radiusFiltered;
-  if (selectedItem) {
-    const selectedProduct = products.find(p => p.productType === selectedItem);
-    if (selectedProduct) {
-      finalFiltered = radiusFiltered.filter(loc =>
-        loc.products.some((p: any) => p.id === selectedProduct.id)
-      );
+      }));
     }
-  }
 
-  finalFiltered = finalFiltered.map((loc) => {
-  const googleMapsQuery = `${loc.address.trim().replace(/\s+/g, '+')},+${loc.city.trim().replace(/\s+/g, '+')},+${loc.province.trim().replace(/\s+/g, '+')}`;
-  const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=' + googleMapsQuery;
 
-  return {
-    ...loc,
-    googleMapsLink,
+    let finalFiltered = radiusFiltered;
+    if (selectedItem) {
+      const selectedProduct = products.find(p => p.productType === selectedItem);
+      if (selectedProduct) {
+        finalFiltered = radiusFiltered.filter(loc =>
+          loc.products.some((p: any) => p.id === selectedProduct.id)
+        );
+      }
+    }
+
+    finalFiltered = finalFiltered.map((loc) => {
+      const googleMapsQuery = `${loc.address.trim().replace(/\s+/g, '+')},+${loc.city.trim().replace(/\s+/g, '+')},+${loc.province.trim().replace(/\s+/g, '+')}`;
+      const googleMapsLink = 'https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=' + googleMapsQuery;
+
+      return {
+        ...loc,
+        googleMapsLink,
+      };
+    });
+
+
+
+    setFilteredLocations(finalFiltered);
   };
-});
-    
-
-
-  setFilteredLocations(finalFiltered);
-};
 
 
 
@@ -129,7 +129,7 @@ export default function StoreFinderPage() {
     const fetchProducts = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/productTypes?limit=2000`);
       const data = await res.json();
-      setProducts(data.docs); 
+      setProducts(data.docs);
     };
     fetchProducts();
   }, []);
@@ -154,11 +154,20 @@ export default function StoreFinderPage() {
 
         <input
           type="number"
-          placeholder="Set Radius"
+          inputMode='numeric'
+          placeholder="Set Radius (Km)"
           min="0"
           value={kmRadius}
-          onChange={(e) => setKmRadius(Number(e.target.value))}
-          className="w-full p-2 border border-grey-300 rounded mb-4 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+          onChange={(e) => {
+            const value = e.target.value;
+
+            if (value === '' || /^\d+$/.test(value)) {
+              setKmRadius(value);
+              console.log(value);
+            }
+          }}
+          className="w-full p-2 border rounded mb-4 text-black placeholder-gray-400 focus:outline-none transition duration-200"
+
         />
 
         <button
@@ -178,17 +187,17 @@ export default function StoreFinderPage() {
               <h2 className="text-lg font-semibold">{location.storeName}</h2>
               <p>{location.address}, {location.city}, {location.province}</p>
               {location.distance && (
-              <p className="text-sm text-gray-600">
-                Distance: {location.distance} km
-              </p>
-          )}
+                <p className="text-sm text-gray-600">
+                  Distance: {location.distance} km
+                </p>
+              )}
               <a
                 href={location.googleMapsLink} target="_blank" rel="noopener noreferrer" className="block text-blue-600 text-base font-semibold mt-1" onClick={(e) => {
-                  e.stopPropagation(); 
+                  e.stopPropagation();
                 }}
               >
                 Get Directions
-            </a>
+              </a>
             </li>
           ))}
         </ul>
@@ -197,11 +206,11 @@ export default function StoreFinderPage() {
       <div className="w-2/3 h-screen">
         <div className="w-full h-full">
           <MapComponent
-          userCoords={userCoords}
-          selectedLocation={selectedLocation}
-          locations={filteredLocations} 
-          setUserCoords={setUserCoords}
-        />
+            userCoords={userCoords}
+            selectedLocation={selectedLocation}
+            locations={filteredLocations}
+            setUserCoords={setUserCoords}
+          />
         </div>
       </div>
     </div>
