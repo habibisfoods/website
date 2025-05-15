@@ -139,7 +139,7 @@ export default function StoreFinderPage() {
     <div className="flex h-screen">
       <div className="w-1/3 bg-white shadow-lg p-4 overflow-y-auto text-black">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">Find a Store</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Find a Store</h1>
           <div className="ml-4">
             <DropdownSelector selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
           </div>
