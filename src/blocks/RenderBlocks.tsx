@@ -7,6 +7,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { CarouselBlock } from '@/blocks/CarouselBlock/Component'
 import { SocialMedia } from './SocialMedia/config'
 
 const blockComponents = {
@@ -16,6 +17,7 @@ const blockComponents = {
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
   SocialMedia: SocialMedia,
+  carousel: CarouselBlock,
 }
 
 export const RenderBlocks: React.FC<{
