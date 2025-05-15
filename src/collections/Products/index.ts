@@ -19,7 +19,6 @@ import { slugField } from '@/fields/slug'
 
 import { authenticated } from '../../access/authenticated'
 import { anyone } from '../../access/anyone'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 
 export const Products: CollectionConfig<'products'> = {
   slug: 'products',
@@ -116,26 +115,6 @@ export const Products: CollectionConfig<'products'> = {
           ],
         },
       ],
-    },
-    {
-      name: 'publishedAt',
-      type: 'date',
-      admin: {
-        date: {
-          pickerAppearance: 'dayAndTime',
-        },
-        position: 'sidebar',
-      },
-      hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === 'published' && !value) {
-              return new Date()
-            }
-            return value
-          },
-        ],
-      },
     },
     {
       name: 'productType',
