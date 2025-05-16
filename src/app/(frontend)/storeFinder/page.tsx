@@ -19,6 +19,7 @@ export default function StoreFinderPage() {
   const [kmRadius, setKmRadius] = useState('')
   const [userCoords, setUserCoords] = useState<[number, number] | null>(null)
   const [selectedLocation, setSelectedLocation] = useState<any | null>(null)
+  const [warningMessage, setWarningMessage] = useState('')
 
   const handleSearchStores = async () => {
     if (searchStores.length === 0) return
@@ -34,7 +35,7 @@ export default function StoreFinderPage() {
 
       await applyFilters(coords)
     } else {
-      console.log('No results found for the given location.')
+      setWarningMessage('No results found for this location. Please try again.'); 
     }
   }
 
@@ -146,11 +147,18 @@ export default function StoreFinderPage() {
             <DropdownSelector selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
           </div>
         </div>
+        {warningMessage && (
+          <div className="text-red-600 font-medium mb-2">
+            {warningMessage}
+          </div>
+        )}
         <input
           type="text"
           placeholder="Enter a location"
           value={searchStores}
-          onChange={(e) => setSearchStores(e.target.value)}
+          onChange={(e) => {
+            setSearchStores(e.target.value); setWarningMessage('');
+          }}
           onKeyDown={(e) => e.key === 'Enter' && handleSearchStores()}
           className="w-full p-2 border border-grey-300 rounded mb-4 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
         />
