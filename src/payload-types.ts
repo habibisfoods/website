@@ -762,6 +762,8 @@ export interface CarouselBlock {
   populateBy?: ('all' | 'type') | null;
   selectedType?: (number | null) | ProductType;
   limit?: number | null;
+  showDescription?: boolean | null;
+  showProductTypes?: boolean | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'carousel';
@@ -1258,6 +1260,8 @@ export interface CarouselBlockSelect<T extends boolean = true> {
   populateBy?: T;
   selectedType?: T;
   limit?: T;
+  showDescription?: T;
+  showProductTypes?: T;
   id?: T;
   blockName?: T;
 }

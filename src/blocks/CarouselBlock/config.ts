@@ -59,6 +59,18 @@ export const Carousel: Block = {
       defaultValue: 10,
       label: 'Limit',
     },
+    {
+      name: 'showDescription',
+      type: 'checkbox',
+      label: 'Show Description',
+      defaultValue: true,
+    },
+    {
+      name: 'showProductTypes',
+      type: 'checkbox',
+      label: 'Show Product Type',
+      defaultValue: true,
+    },
   ],
   labels: {
     plural: 'Carousels',

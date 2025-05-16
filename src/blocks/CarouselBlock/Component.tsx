@@ -10,9 +10,19 @@ import { ProductCarousel } from '@/components/ProductCarousel'
 export const CarouselBlock: React.FC<
   CarouselProps & {
     id?: string
+    showDescription?: boolean
+    showProductTypes?: boolean
   }
 > = async (props) => {
-  const { id, selectedType, introContent, limit: limitFromProps, populateBy } = props
+  const {
+    id,
+    selectedType,
+    introContent,
+    limit: limitFromProps,
+    populateBy,
+    showDescription,
+    showProductTypes,
+  } = props
 
   const limit = limitFromProps || 5
 
@@ -50,7 +60,11 @@ export const CarouselBlock: React.FC<
           <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />
         </div>
       )}
-      <ProductCarousel products={products} />
+      <ProductCarousel
+        products={products}
+        showDescription={showDescription}
+        showProductTypes={showProductTypes}
+      />
     </div>
   )
 }

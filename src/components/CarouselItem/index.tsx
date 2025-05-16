@@ -10,21 +10,31 @@ import { Media } from '@/components/Media'
 
 export type CarouselItemPostData = Pick<Product, 'slug' | 'productType' | 'meta' | 'title'>
 
+function shorten(desc: string) {
+  if (desc.length < 110) return desc
+
+  return desc.substring(0, 107) + '...'
+}
+
 export const CarouselItem: React.FC<{
   alignItems?: 'center'
   className?: string
   doc?: Product
+  showDescription?: boolean
   showProductTypes?: boolean
   title?: string
 }> = (props) => {
   const { link } = useClickableCard({})
-  const { className, doc, showProductTypes, title: titleFromProps } = props
+  const { className, doc, showDescription, showProductTypes, title: titleFromProps } = props
 
   const { slug, meta, title, productType } = doc || {}
   const { description, image: metaImage } = meta || {}
 
   const titleToUse = titleFromProps || title
-  const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
+
+  const shortenedDescription = description ? shorten(description) : ''
+
+  const sanitizedDescription = shortenedDescription?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/products/${slug}`
   const productTypeTitle = typeof productType === 'object' ? productType.productType : ''
 
@@ -45,7 +55,7 @@ export const CarouselItem: React.FC<{
       <div className="p-4">
         {/* Product Type */}
         {showProductTypes && productType && (
-          <div className="uppercase text-sm mb-4">{productTypeTitle}</div>
+          <div className="uppercase text-sm mb-2">{productTypeTitle}</div>
         )}
 
         {/* Title */}
@@ -60,7 +70,11 @@ export const CarouselItem: React.FC<{
         )}
 
         {/* Description */}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
+        {description && (
+          <div className="mt-2 aspect-3/2 overflow-hidden">
+            {showDescription && description && <p>{sanitizedDescription}</p>}
+          </div>
+        )}
       </div>
     </article>
   )

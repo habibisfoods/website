@@ -7,6 +7,8 @@ import { Product } from '@/payload-types'
 
 export type Props = {
   products: Product[]
+  showDescription?: boolean
+  showProductTypes?: boolean
 }
 
 const responsive: ResponsiveType = {
@@ -25,7 +27,7 @@ const responsive: ResponsiveType = {
 }
 
 export const CarouselWrapper: React.FC<Props> = (props) => {
-  const { products } = props
+  const { products, showDescription, showProductTypes } = props
 
   return (
     <Carousel
@@ -39,7 +41,12 @@ export const CarouselWrapper: React.FC<Props> = (props) => {
         if (typeof result === 'object' && result !== null) {
           return (
             <div key={index} className="p-2">
-              <CarouselItem className="h-full" doc={result} showProductTypes />
+              <CarouselItem
+                className="h-full"
+                doc={result}
+                showProductTypes={showProductTypes}
+                showDescription={showDescription}
+              />
             </div>
           )
         }
