@@ -21,8 +21,12 @@ const responsive: ResponsiveType = {
     items: 3,
   },
   mobile: {
-    breakpoint: { max: 464, min: 0 },
+    breakpoint: { max: 464, min: 256 },
     items: 2,
+  },
+  mini: {
+    breakpoint: { max: 256, min: 0 },
+    items: 1,
   },
 }
 
