@@ -7,7 +7,7 @@ export const Locations: CollectionConfig<'locations'> = {
   slug: 'locations',
   admin: {
     useAsTitle: 'storeName',
-    defaultColumns: ['storeName', 'parentStore', 'address', 'city', 'province'],
+    defaultColumns: ['storeName', 'address', 'street', 'city', 'province'],
   },
   access: {
     create: authenticated,
@@ -33,9 +33,22 @@ export const Locations: CollectionConfig<'locations'> = {
     },
     {
       name: 'address',
-      label: 'Address',
+      label: 'Address Number',
       type: 'text',
       required: true,
+      hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
+    },
+    {
+      name: 'street',
+      label: 'Street',
+      type: 'text',
+      required: true,
+      hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
+    },
+    {
+      name: 'unit',
+      label: 'Building/Unit #',
+      type: 'text',
       hooks: { beforeValidate: [({ value }) => value.trim().toUpperCase()] },
     },
     {

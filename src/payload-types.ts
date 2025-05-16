@@ -842,6 +842,8 @@ export interface Location {
   parentStore: string;
   storeName: string;
   address: string;
+  street: string;
+  unit?: string | null;
   city: string;
   province: 'AB' | 'BC' | 'MB' | 'NB' | 'NL' | 'NS' | 'NT' | 'NU' | 'ON' | 'PE' | 'QC' | 'SK' | 'YT';
   postalCode?: string | null;
@@ -1462,6 +1464,8 @@ export interface LocationsSelect<T extends boolean = true> {
   parentStore?: T;
   storeName?: T;
   address?: T;
+  street?: T;
+  unit?: T;
   city?: T;
   province?: T;
   postalCode?: T;

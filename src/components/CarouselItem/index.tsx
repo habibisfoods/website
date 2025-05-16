@@ -60,12 +60,12 @@ export const CarouselItem: React.FC<{
 
         {/* Title */}
         {titleToUse && (
-          <div className="prose">
-            <h3>
+          <div className="prose not-sm:hidden">
+            <h4>
               <Link className="not-prose" href={href} ref={link.ref}>
                 {titleToUse}
               </Link>
-            </h3>
+            </h4>
           </div>
         )}
 
