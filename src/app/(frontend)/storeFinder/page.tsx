@@ -48,9 +48,7 @@ export default function StoreFinderPage() {
       radiusFiltered = await Promise.all(
         allLocations.map(async (loc) => {
           const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`
-          const geoRes = await fetch(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`,
-          )
+          const geoRes = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(address)}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`)
           const geoData = await geoRes.json()
           if (!geoData.features?.length) return null
 
@@ -75,7 +73,7 @@ export default function StoreFinderPage() {
         allLocations.map(async (loc) => {
           const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`
           const geoRes = await fetch(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`,
+            `https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(address)}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`,
           )
           const geoData = await geoRes.json()
           if (!geoData.features?.length) return null
