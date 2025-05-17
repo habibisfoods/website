@@ -137,7 +137,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedLocatio
     if (selectedLocation && mapRef.current) {
       const address = `${selectedLocation.parentStore}, ${selectedLocation.address}, ${selectedLocation.city}, ${selectedLocation.province}`;
 
-      fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
+      fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(address)}&access_token=${mapboxgl.accessToken}`)
         .then(res => res.json())
         .then(geo => {
           if (geo.features?.length) {
