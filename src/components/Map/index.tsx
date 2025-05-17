@@ -16,10 +16,33 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
   if (!locations || locations.length === 0) return;
 
   locations.forEach((loc: any) => {
-    const address = `${loc.address}, ${loc.city}, ${loc.province}`;
+    // const address_number = loc.address || "";
+    // const street = loc.street || "";
 
-    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`)
-      .then(res => res.json())
+
+    //// I think????????MAYBE??????????SFsdfsdsfsdfsdfs
+    // let fullStreet = street;
+    // if (loc.unit) {
+    //   fullStreet = `${address_number} ${street} ${loc.unit} `;
+    // } else {
+    //   fullStreet = `${address_number} ${street}`;
+    // }
+
+    // console.log("fullStreet", fullStreet);
+
+    const params = new URLSearchParams({
+
+      address_number: loc.address,
+      street: loc.street,
+      place: loc.city,
+      region: loc.province,
+      postcode: loc.postalCode || "",
+      country: "Canada",
+      proximity: "ip",
+      access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
+    });
+    const url = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`;
+    fetch(url).then(res => res.json())
       .then(geo => {
         if (!geo.features?.length) return;
 
@@ -32,7 +55,7 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
         el.style.display = 'flex';
         el.style.alignItems = 'center';
         el.style.justifyContent = 'center';
-        el.style.pointerEvents = 'auto'; 
+        el.style.pointerEvents = 'auto';
 
         const img = document.createElement('img');
         img.src = '/favicon.svg';
@@ -42,7 +65,7 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
         img.style.transition = 'transform 0.2s ease';
         img.style.transformOrigin = 'center';
 
-    
+
         img.addEventListener('mouseenter', () => img.style.transform = 'scale(1.2)');
         img.addEventListener('mouseleave', () => img.style.transform = 'scale(1)');
 
@@ -50,13 +73,13 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
 
         const marker = new mapboxgl.Marker({
           element: el,
-          anchor: 'center', 
+          anchor: 'center',
         })
           .setLngLat([lng, lat])
           .setPopup(new mapboxgl.Popup().setHTML(`
               <div style="color: black;">
                 <strong>${loc.storeName}</strong><br/>
-                ${loc.address}<br/>
+                ${loc.address} ${loc.street}<br/>
                 ${loc.city}, ${loc.province} <br/>
                 <a 
                 href="${loc.googleMapsLink}" target="_blank" rel="noopener noreferrer" class="block text-blue-600 text-base font-semibold mt-1">
@@ -135,9 +158,20 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedLocatio
   // Focus on selected location marker
   useEffect(() => {
     if (selectedLocation && mapRef.current) {
-      const address = `${selectedLocation.parentStore}, ${selectedLocation.address}, ${selectedLocation.city}, ${selectedLocation.province}`;
+      // const address = `${selectedLocation.parentStore}, ${selectedLocation.address}, ${selectedLocation.city}, ${selectedLocation.province}`;
+      const params = new URLSearchParams({
 
-      fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(address)}&access_token=${mapboxgl.accessToken}`)
+        address_number: selectedLocation.address,
+        street: selectedLocation.street,
+        place: selectedLocation.city,
+        region: selectedLocation.province,
+        postcode: selectedLocation.postalCode || "",
+        country: "Canada",
+        proximity: "ip",
+        access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
+      });
+      const url = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`;
+      fetch(url)
         .then(res => res.json())
         .then(geo => {
           if (geo.features?.length) {

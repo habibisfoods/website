@@ -35,7 +35,7 @@ export default function StoreFinderPage() {
 
       await applyFilters(coords)
     } else {
-      setWarningMessage('No results found for this location. Please try again.'); 
+      setWarningMessage('No results found for this location. Please try again.');
     }
   }
 
@@ -47,8 +47,19 @@ export default function StoreFinderPage() {
 
       radiusFiltered = await Promise.all(
         allLocations.map(async (loc) => {
-          const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`
-          const geoRes = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(address)}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`)
+          const params = new URLSearchParams({
+
+            address_number: loc.address,
+            street: loc.street,
+            place: loc.city,
+            region: loc.province,
+            postcode: loc.postalCode || "",
+            country: "Canada",
+            proximity: "ip",
+            access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
+          });
+          const url = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`;
+          const geoRes = await fetch(url)
           const geoData = await geoRes.json()
           if (!geoData.features?.length) return null
 
@@ -71,10 +82,19 @@ export default function StoreFinderPage() {
       const originPoint = turf.point(searchCoords)
       radiusFiltered = await Promise.all(
         allLocations.map(async (loc) => {
-          const address = `${loc.store_name}, ${loc.address}, ${loc.city}, ${loc.province}`
-          const geoRes = await fetch(
-            `https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(address)}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`,
-          )
+          const params = new URLSearchParams({
+
+            address_number: loc.address,
+            street: loc.street,
+            place: loc.city,
+            region: loc.province,
+            postcode: loc.postalCode || "",
+            country: "Canada",
+            proximity: "ip",
+            access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
+          });
+          const url = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`;
+          const geoRes = await fetch(url)
           const geoData = await geoRes.json()
           if (!geoData.features?.length) return null
 
