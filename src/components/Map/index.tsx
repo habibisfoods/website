@@ -16,37 +16,32 @@ function plotPoints(locations: any[], currentMap: any, markers: any) {
   if (!locations || locations.length === 0) return;
 
   locations.forEach((loc: any) => {
-    const address_number = loc.address || "";
-    const street = loc.street || "";
+    // const address_number = loc.address || "";
+    // const street = loc.street || "";
 
 
     //// I think????????MAYBE??????????SFsdfsdsfsdfsdfs
-    let fullStreet = street;
-    if (loc.unit) {
-      fullStreet = `${address_number} ${street} ${loc.unit} `;
-    } else {
-      fullStreet = `${address_number} ${street}`;
-    }
+    // let fullStreet = street;
+    // if (loc.unit) {
+    //   fullStreet = `${address_number} ${street} ${loc.unit} `;
+    // } else {
+    //   fullStreet = `${address_number} ${street}`;
+    // }
 
-    console.log("fullStreet", fullStreet);
+    // console.log("fullStreet", fullStreet);
 
     const params = new URLSearchParams({
 
-      street: fullStreet,
-      place: loc.city || "",
-      region: loc.province || "",
+      address_number: loc.address,
+      street: loc.street,
+      place: loc.city,
+      region: loc.province,
       postcode: loc.postalCode || "",
       country: "Canada",
       proximity: "ip",
       access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
     });
-
-
-  
-
-
     const url = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`;
-
     fetch(url).then(res => res.json())
       .then(geo => {
         if (!geo.features?.length) return;
@@ -163,9 +158,20 @@ const MapComponent: React.FC<MapComponentProps> = ({ userCoords, selectedLocatio
   // Focus on selected location marker
   useEffect(() => {
     if (selectedLocation && mapRef.current) {
-      const address = `${selectedLocation.parentStore}, ${selectedLocation.address}, ${selectedLocation.city}, ${selectedLocation.province}`;
+      // const address = `${selectedLocation.parentStore}, ${selectedLocation.address}, ${selectedLocation.city}, ${selectedLocation.province}`;
+      const params = new URLSearchParams({
 
-      fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(address)}&access_token=${mapboxgl.accessToken}`)
+        address_number: selectedLocation.address,
+        street: selectedLocation.street,
+        place: selectedLocation.city,
+        region: selectedLocation.province,
+        postcode: selectedLocation.postalCode || "",
+        country: "Canada",
+        proximity: "ip",
+        access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
+      });
+      const url = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`;
+      fetch(url)
         .then(res => res.json())
         .then(geo => {
           if (geo.features?.length) {
