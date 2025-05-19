@@ -59,21 +59,39 @@ function plotPoints(locations: any[], markers: any, currentMap?: any) {
           anchor: 'center',
         })
           .setLngLat([lng, lat])
-          .setPopup(
-            new mapboxgl.Popup().setHTML(`
-              <div style="color: black;">
-                <strong>${loc.storeName}</strong><br/>
-                ${loc.address} ${loc.street}<br/>
-                ${loc.city}, ${loc.province} <br/>
-                <a 
-                href="${loc.googleMapsLink}" target="_blank" rel="noopener noreferrer" class="block text-blue-600 text-base font-semibold mt-1">
-                Get Directions
-                </a>  
-              </div>
-            `),
-          )
-          .addTo(currentMap)
+          .setPopup(new mapboxgl.Popup({ closeButton: false }).setHTML(`
+            <div style="color: black; position: relative;">
+              <div style="text-align: right;">
 
+                <button 
+                  onclick="this.closest('.mapboxgl-popup').remove()"
+                  style="
+                    position: relative;
+                    font-size: 26px;
+                    font-weight: bold;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    color: black;
+                  ">
+                  ×
+                </button>
+              </div>
+
+              <strong>${loc.storeName}</strong><br/>
+              ${loc.address} ${loc.street}<br/>
+              ${loc.city}, ${loc.province} <br/>
+
+              <a 
+                href="${loc.googleMapsLink}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="block text-blue-600 text-base font-semibold mt-1">
+                Get Directions
+              </a>
+
+            </div>`))
+        .addTo(currentMap)
         markers.current.push(marker)
       })
   })
