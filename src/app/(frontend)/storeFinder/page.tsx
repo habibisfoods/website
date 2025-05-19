@@ -215,14 +215,16 @@ export default function StoreFinderPage() {
 
         <ul className="space-y-3 text-black">
           {filteredLocations.map((location) => (
+            console.log(location),
             <li
               key={location.id}
               onClick={() => setSelectedLocation(location)}
               className="p-4 bg-gray-100 rounded shadow hover:bg-gray-200 transition duration-200"
             >
               <h2 className="text-lg font-semibold">{location.storeName}</h2>
+              
               <p>
-                {location.address}, {location.city}, {location.province}
+                {location.address} {location.street} {location.city}, {location.province}<br />{location.postalCode}
               </p>
               {location.distance && (
                 <p className="text-sm text-gray-600">Distance: {location.distance} km</p>
