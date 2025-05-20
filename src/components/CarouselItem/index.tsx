@@ -1,7 +1,6 @@
 'use client'
 import { cn } from '@/utilities/ui'
-import useClickableCard from '@/utilities/useClickableCard'
-import Link from 'next/link'
+import { CMSLink } from '../Link'
 import React from 'react'
 
 import type { Product } from '@/payload-types'
@@ -24,7 +23,6 @@ export const CarouselItem: React.FC<{
   showProductTypes?: boolean
   title?: string
 }> = (props) => {
-  const { link } = useClickableCard({})
   const { className, doc, showDescription, showProductTypes, title: titleFromProps } = props
 
   const { slug, meta, title, productType } = doc || {}
@@ -60,11 +58,16 @@ export const CarouselItem: React.FC<{
 
         {/* Title */}
         {titleToUse && (
-          <div className="prose not-sm:hidden">
+          <div className="prose">
             <h4>
-              <Link className="not-prose" href={href} ref={link.ref}>
+              <CMSLink
+                className="text-black no-underline hover:underline"
+                appearance="inline"
+                type="custom"
+                url={href}
+              >
                 {titleToUse}
-              </Link>
+              </CMSLink>
             </h4>
           </div>
         )}
