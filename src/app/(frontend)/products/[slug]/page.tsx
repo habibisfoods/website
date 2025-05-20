@@ -45,7 +45,7 @@ export default async function Product({ params: paramsPromise }: Args) {
 
   if (!product) return <PayloadRedirects url={url} />
 
-  const carouselProducts = await generateCarouselProducts(product)
+  const carouselProducts = await generateCarouselProducts({ product })
 
   return (
     <article className="pt-8 pb-16">
@@ -84,9 +84,10 @@ export default async function Product({ params: paramsPromise }: Args) {
   )
 }
 
-export async function generateMetaData({ params: paramsPromise }: Args): Promise<Metadata> {
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
   const product = await queryProductBySlug({ slug })
+
   return generateMeta({ doc: product })
 }
 
@@ -105,7 +106,7 @@ const queryProductBySlug = cache(async ({ slug }: { slug: string }) => {
   return result.docs?.[0] || null
 })
 
-export async function generateCarouselProducts(product: Product): Promise<Product[]> {
+const generateCarouselProducts = cache(async ({ product }: { product: Product }) => {
   const payload = await getPayload({ config: configPromise })
   const result = await payload.find({
     collection: 'products',
@@ -118,5 +119,5 @@ export async function generateCarouselProducts(product: Product): Promise<Produc
     },
   })
 
-  return result.docs
-}
+  return result.docs || null
+})
