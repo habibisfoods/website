@@ -214,7 +214,7 @@ export default function StoreFinderPage() {
         </button>
 
         <ul className="space-y-3 text-black">
-          {filteredLocations.map((location) => (
+          {filteredLocations.sort((a, b) => a.distance - b.distance).map((location) => (
             console.log(location),
             <li
               key={location.id}
