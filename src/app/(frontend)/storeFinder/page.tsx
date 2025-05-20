@@ -3,8 +3,6 @@
 import dynamic from 'next/dynamic'
 import { useState, useEffect } from 'react'
 import * as turf from '@turf/turf'
-import type { Metadata } from 'next'
-import { getServerSideURL } from '@/utilities/getURL'
 
 const MapComponent = dynamic(() => import('@/components/Map/index'))
 const DropdownSelector = dynamic(() => import('@/components/DropdownSelector/index'), {
@@ -266,18 +264,4 @@ export default function StoreFinderPage() {
       </div>
     </div>
   )
-}
-
-export function generateMetadata(): Metadata {
-  return {
-    title: `Store Finder | Habibis Mediterranean Foods`,
-    description: 'Find out where to get our products',
-    openGraph: {
-      images: [
-        {
-          url: `${getServerSideURL()}/Habibis-H-And-Fez-Logo.svg`,
-        },
-      ],
-    },
-  }
 }
