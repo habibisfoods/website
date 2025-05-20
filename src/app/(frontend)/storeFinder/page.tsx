@@ -3,6 +3,8 @@
 import dynamic from 'next/dynamic'
 import { useState, useEffect } from 'react'
 import * as turf from '@turf/turf'
+import type { Metadata } from 'next'
+import { getServerSideURL } from '@/utilities/getURL'
 
 const MapComponent = dynamic(() => import('@/components/Map/index'))
 const DropdownSelector = dynamic(() => import('@/components/DropdownSelector/index'), {
@@ -214,34 +216,42 @@ export default function StoreFinderPage() {
         </button>
 
         <ul className="space-y-3 text-black">
-          {filteredLocations.sort((a, b) => a.distance - b.distance).map((location) => (
-            console.log(location),
-            <li
-              key={location.id}
-              onClick={() => setSelectedLocation(location)}
-              className="p-4 bg-gray-100 rounded shadow hover:bg-gray-200 transition duration-200"
-            >
-              <h2 className="text-lg font-semibold">{location.storeName}</h2>
-              
-              <p>
-                {location.address} {location.street} {location.city}, {location.province}<br />{location.postalCode}
-              </p>
-              {location.distance && (
-                <p className="text-sm text-gray-600">Distance: {location.distance} km</p>
-              )}
-              <a
-                href={location.googleMapsLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-blue-600 text-base font-semibold mt-1"
-                onClick={(e) => {
-                  e.stopPropagation()
-                }}
-              >
-                Get Directions
-              </a>
-            </li>
-          ))}
+          {filteredLocations
+            .sort((a, b) => a.distance - b.distance)
+            .map(
+              (location) => (
+                console.log(location),
+                (
+                  <li
+                    key={location.id}
+                    onClick={() => setSelectedLocation(location)}
+                    className="p-4 bg-gray-100 rounded shadow hover:bg-gray-200 transition duration-200"
+                  >
+                    <h2 className="text-lg font-semibold">{location.storeName}</h2>
+
+                    <p>
+                      {location.address} {location.street} {location.city}, {location.province}
+                      <br />
+                      {location.postalCode}
+                    </p>
+                    {location.distance && (
+                      <p className="text-sm text-gray-600">Distance: {location.distance} km</p>
+                    )}
+                    <a
+                      href={location.googleMapsLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-blue-600 text-base font-semibold mt-1"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                      }}
+                    >
+                      Get Directions
+                    </a>
+                  </li>
+                )
+              ),
+            )}
         </ul>
       </div>
 
@@ -256,4 +266,18 @@ export default function StoreFinderPage() {
       </div>
     </div>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: `Store Finder | Habibis Mediterranean Foods`,
+    description: 'Find out where to get our products',
+    openGraph: {
+      images: [
+        {
+          url: `${getServerSideURL()}/Habibis-H-And-Fez-Logo.svg`,
+        },
+      ],
+    },
+  }
 }

@@ -108,13 +108,15 @@ const queryProductBySlug = cache(async ({ slug }: { slug: string }) => {
 
 const generateCarouselProducts = cache(async ({ product }: { product: Product }) => {
   const payload = await getPayload({ config: configPromise })
+  const productTypeId =
+    typeof product.productType === 'number' ? product.productType : product.productType.id
   const result = await payload.find({
     collection: 'products',
     limit: 10,
     pagination: false,
     where: {
       productType: {
-        in: product.productType,
+        equals: productTypeId,
       },
     },
   })

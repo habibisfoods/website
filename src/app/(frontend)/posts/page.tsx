@@ -7,6 +7,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
+import { getServerSideURL } from '@/utilities/getURL'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -58,6 +59,10 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Posts`,
+    title: `All Posts | Habibis Mediterranean Foods`,
+    description: 'Learn about our culture and more',
+    openGraph: {
+      images: [{ url: `${getServerSideURL()}/Habibis-Full-Logo.svg` }],
+    },
   }
 }

@@ -31,15 +31,21 @@ export const CarouselBlock: React.FC<
   const payload = await getPayload({ config: configPromise })
 
   if (populateBy === 'type') {
+    const productTypeId =
+      typeof selectedType === 'number' ? selectedType : selectedType ? selectedType.id : null
+
     const fetchedProducts = await payload.find({
       collection: 'products',
-      depth: 1,
       limit,
-      where: {
-        productType: {
-          in: selectedType,
-        },
-      },
+      ...(productTypeId
+        ? {
+            where: {
+              productType: {
+                equals: productTypeId,
+              },
+            },
+          }
+        : {}),
     })
 
     products = fetchedProducts.docs
