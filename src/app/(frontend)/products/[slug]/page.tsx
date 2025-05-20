@@ -38,7 +38,7 @@ type Args = {
   }>
 }
 
-export default async function Product({ params: paramsPromise }: Args) {
+export default async function Page({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const url = '/products/' + slug
   const product = await queryProductBySlug({ slug })
