@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import React, { cache, Fragment } from 'react'
+import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 
 import type { Product } from '@/payload-types'
@@ -10,6 +10,7 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { ProductCarousel } from '@/components/ProductCarousel'
 import { Media } from '@/components/Media'
+import { ImageSelect } from '@/components/ImageSelect'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -58,21 +59,7 @@ export default async function Product({ params: paramsPromise }: Args) {
               <Media resource={product.productImage} size="33vw" />
             )}
             {product.productImage && Array.isArray(product.productImage) && (
-              <div className="justify-items-center">
-                <Media resource={product.productImage[0]} />
-                <div className="flex flex-row border border-radius-lg justify-items-center">
-                  {product.productImage?.map((image, index) => {
-                    return (
-                      <Media
-                        key={index}
-                        resource={image}
-                        className="w-28 md:w-48 aspect-square items-center justify-items-center"
-                        imgClassName="w-full h-full object-cover"
-                      />
-                    )
-                  })}
-                </div>
-              </div>
+              <ImageSelect images={product.productImage} />
             )}
           </div>
         )}
