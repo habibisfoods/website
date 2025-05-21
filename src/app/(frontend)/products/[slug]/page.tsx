@@ -48,10 +48,10 @@ export default async function Page({ params: paramsPromise }: Args) {
   const carouselProducts = await generateCarouselProducts({ product })
 
   return (
-    <article className="pt-8 pb-16">
+    <article className="pt-2 pb-16">
       <PayloadRedirects disableNotFound url={url} />
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <h1 className="text-3xl text-center font-bold pb-4">{product.title}</h1>
+      <div className="flex flex-col items-center gap-4 pt-2">
+        <h1 className="text-3xl text-center font-bold pb-2">{product.title}</h1>
         {/* pics */}
         {product.productImage && (
           <div className="container pb-8 justify-items-center">

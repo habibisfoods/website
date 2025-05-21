@@ -10,16 +10,12 @@ export const ImageSelect: React.FC<{ images: (number | MediaProps)[] }> = (props
 
   return (
     <div className="justify-items-center">
-      <Media
-        resource={images[selected]}
-        size="33vw"
-        className="border-4 border-orange-300 rounded"
-      />
-      <div className="flex flex-row justify-items-center">
+      <Media resource={images[selected]} size="33vw" />
+      <div className="flex flex-row gap-2 justify-items-center border-4 border-orange-600 rounded">
         {images?.map((image, index) => {
           return (
             <button
-              className="border-4 rounded m-1 border-orange-300"
+              className="m-1"
               key={index}
               onClick={() => {
                 setSelected(index)

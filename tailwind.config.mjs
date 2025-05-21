@@ -1,8 +1,9 @@
 import tailwindcssAnimate from 'tailwindcss-animate'
 import typography from '@tailwindcss/typography'
+import withMT from '@material-tailwind/react/utils/withMT'
 
 /** @type {import('tailwindcss').Config} */
-const config = {
+const config = withMT({
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -148,6 +149,6 @@ const config = {
       }),
     },
   },
-}
+})
 
 export default config
