@@ -168,8 +168,8 @@ export default function StoreFinderPage() {
   }, [])
 
   return (
-    <div className="flex h-screen">
-      <div className="w-1/3 bg-white shadow-lg p-4 overflow-y-auto text-black">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-0 h-screen">
+      <div className="md:w-1/3 bg-white shadow-lg p-4 max-h-96 md:max-h-screen overflow-y-scroll md:overflow-y-auto text-black">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold text-gray-800">Find a Store</h1>
           <div className="ml-4">
@@ -208,7 +208,7 @@ export default function StoreFinderPage() {
 
         <button
           onClick={handleSearchStores}
-          className="w-full bg-blue-500 text-white p-2 rounded mb-4 hover:bg-blue-600 transition duration-200"
+          className="w-full bg-orange-600 text-white p-2 rounded mb-4 hover:bg-orange-600/90 transition duration-200"
         >
           Search
         </button>
@@ -239,7 +239,7 @@ export default function StoreFinderPage() {
                       href={location.googleMapsLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block text-blue-600 text-base font-semibold mt-1"
+                      className="block text-orange-600 text-base font-semibold mt-1"
                       onClick={(e) => {
                         e.stopPropagation()
                       }}
@@ -253,7 +253,7 @@ export default function StoreFinderPage() {
         </ul>
       </div>
 
-      <div className="w-2/3 h-screen">
+      <div className="w-full h-full md:w-2/3 md:h-screen">
         <div className="w-full h-full">
           <MapComponent
             userCoords={userCoords}

@@ -47,7 +47,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
             )
           })}
           <li>
-            <button className="container" onClick={closeDrawer}>
+            <button className="px-4" onClick={closeDrawer}>
               <Link href="/search">
                 <SearchIcon className="w-5 text-white" />
               </Link>
