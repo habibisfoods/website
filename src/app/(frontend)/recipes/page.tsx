@@ -55,7 +55,7 @@ export default async function Page() {
                 type="custom"
                 url={`/posts/${latestPost.slug}`}
                 appearance="inline"
-                className="text-blue-500 hover:underline"
+                className="text-orange-500 hover:underline"
               >
                 See How to Make it →
               </CMSLink>
