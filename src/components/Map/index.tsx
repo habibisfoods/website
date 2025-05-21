@@ -59,7 +59,8 @@ function plotPoints(locations: any[], markers: any, currentMap?: any) {
           anchor: 'center',
         })
           .setLngLat([lng, lat])
-          .setPopup(new mapboxgl.Popup({ closeButton: false }).setHTML(`
+          .setPopup(
+            new mapboxgl.Popup({ closeButton: false }).setHTML(`
             <div style="color: black; position: relative;">
               <div style="text-align: right;">
 
@@ -86,12 +87,13 @@ function plotPoints(locations: any[], markers: any, currentMap?: any) {
                 href="${loc.googleMapsLink}" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="block text-blue-600 text-base font-semibold mt-1">
+                class="block text-orange-600 text-base font-semibold mt-1">
                 Get Directions
               </a>
 
-            </div>`))
-        .addTo(currentMap)
+            </div>`),
+          )
+          .addTo(currentMap)
         markers.current.push(marker)
       })
   })
