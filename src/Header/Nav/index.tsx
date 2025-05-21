@@ -1,11 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-
 import type { Header as HeaderType } from '@/payload-types'
-
 import NextImage from 'next/image'
-
 import { CMSLink } from '@/components/Link'
 import Link from 'next/link'
 import { SearchIcon, AlignJustifyIcon } from 'lucide-react'
@@ -30,7 +27,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         <AlignJustifyIcon className="w-5 text-primary" />
       </button>
       <Drawer placement="right" open={open} onClose={closeDrawer} className="p-4 bg-orange-600">
-        <div className="container justify-items-center">
+        <div className="container justify-items-center pb-8">
           <NextImage
             src={`${getServerSideURL()}/Habibis-Full-Logo.svg`}
             alt="Habibis Logo"
@@ -39,19 +36,22 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           />
         </div>
 
-        <ul className="space-y-2 font-medium">
+        <ul className="space-y-2 font-lg">
           {navItems.map(({ link }, i) => {
             return (
               <li key={i}>
-                <CMSLink {...link} appearance="link" />
+                <button onClick={closeDrawer}>
+                  <CMSLink {...link} appearance="default" className="text-lg" />
+                </button>
               </li>
             )
           })}
           <li>
-            <Link href="/search">
-              <span className="sr-only">Search</span>
-              <SearchIcon className="w-5 text-primary" />
-            </Link>
+            <button className="container" onClick={closeDrawer}>
+              <Link href="/search">
+                <SearchIcon className="w-5 text-white" />
+              </Link>
+            </button>
           </li>
         </ul>
       </Drawer>
