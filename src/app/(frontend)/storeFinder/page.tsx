@@ -201,7 +201,6 @@ export default function StoreFinderPage() {
 
             if (value === '' || /^\d+$/.test(value)) {
               setKmRadius(value)
-              console.log(value)
             }
           }}
           className="w-full p-2 border rounded mb-4 text-black placeholder-gray-400 focus:outline-none transition duration-200"
@@ -217,40 +216,35 @@ export default function StoreFinderPage() {
         <ul className="space-y-3 text-black">
           {filteredLocations
             .sort((a, b) => a.distance - b.distance)
-            .map(
-              (location) => (
-                console.log(location),
-                (
-                  <li
-                    key={location.id}
-                    onClick={() => setSelectedLocation(location)}
-                    className="p-4 bg-gray-100 rounded shadow hover:bg-gray-200 transition duration-200"
-                  >
-                    <h2 className="text-lg font-semibold">{location.storeName}</h2>
+            .map((location) => (
+              <li
+                key={location.id}
+                onClick={() => setSelectedLocation(location)}
+                className="p-4 bg-gray-100 rounded shadow hover:bg-gray-200 transition duration-200"
+              >
+                <h2 className="text-lg font-semibold">{location.storeName}</h2>
 
-                    <p>
-                      {location.address} {location.street} {location.city}, {location.province}
-                      <br />
-                      {location.postalCode}
-                    </p>
-                    {location.distance && (
-                      <p className="text-sm text-gray-600">Distance: {location.distance} km</p>
-                    )}
-                    <a
-                      href={location.googleMapsLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-orange-600 text-base font-semibold mt-1"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                      }}
-                    >
-                      Get Directions
-                    </a>
-                  </li>
-                )
-              ),
-            )}
+                <p>
+                  {location.address} {location.street} {location.city}, {location.province}
+                  <br />
+                  {location.postalCode}
+                </p>
+                {location.distance && (
+                  <p className="text-sm text-gray-600">Distance: {location.distance} km</p>
+                )}
+                <a
+                  href={location.googleMapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-orange-600 text-base font-semibold mt-1"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
+                >
+                  Get Directions
+                </a>
+              </li>
+            ))}
         </ul>
       </div>
 
