@@ -13,11 +13,13 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
     setSelectedItem(event.target.value)
   }
 
+  const URL = getServerSideURL()
+  console.log(URL)
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch(`${getServerSideURL()}/productTypes?limit=2000`)
-        console.log(getServerSideURL())
+        const response = await fetch(`${URL}/api/productTypes?limit=2000`)
         const data = await response.json()
         const productNames = data.docs.map((item: any) => item.productType)
         setItems(productNames)
