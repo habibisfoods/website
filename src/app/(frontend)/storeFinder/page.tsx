@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useState, useEffect } from 'react'
 import * as turf from '@turf/turf'
+import { getServerSideURL } from '@/utilities/getURL'
 
 const MapComponent = dynamic(() => import('@/components/Map/index'))
 const DropdownSelector = dynamic(() => import('@/components/DropdownSelector/index'), {
@@ -135,7 +136,7 @@ export default function StoreFinderPage() {
   }, [selectedItem, allLocations, products])
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/locations?limit=2000`)
+    fetch(`${getServerSideURL()}/api/locations?limit=2000`)
       .then((res) => res.json())
       .then((data) => {
         setAllLocations(data.docs)
@@ -147,7 +148,7 @@ export default function StoreFinderPage() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/productTypes?limit=2000`)
+      const res = await fetch(`${getServerSideURL()}/api/productTypes?limit=2000`)
       const data = await res.json()
       setProducts(data.docs)
     }

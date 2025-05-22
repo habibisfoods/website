@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { getServerSideURL } from '@/utilities/getURL'
 
 type Props = {
   selectedItem: string
@@ -15,9 +16,7 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/productTypes?limit=2000`,
-        )
+        const response = await fetch(`${getServerSideURL()}/api/productTypes?limit=2000`)
         const data = await response.json()
         const productNames = data.docs.map((item: any) => item.productType)
         setItems(productNames)
