@@ -14,7 +14,7 @@ const DropdownSelector: React.FC<Props> = ({ selectedItem, setSelectedItem }) =>
   }
 
   const URL = getServerSideURL()
-  console.log(URL)
+  console.log('Prod url:', process.env.VERCEL_PROJECT_PRODUCTION_URL)
 
   useEffect(() => {
     const fetchItems = async () => {
