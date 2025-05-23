@@ -12,7 +12,6 @@ interface MapComponentProps {
 
 function plotPoints(locations: any[], markers: any, currentMap?: any) {
   if (!locations || locations.length === 0) return
-
   locations.forEach((loc: any) => {
     const params = new URLSearchParams({
       address_number: loc.address,

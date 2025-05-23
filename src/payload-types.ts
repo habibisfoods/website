@@ -847,6 +847,8 @@ export interface Location {
   city: string;
   province: 'AB' | 'BC' | 'MB' | 'NB' | 'NL' | 'NS' | 'NT' | 'NU' | 'ON' | 'PE' | 'QC' | 'SK' | 'YT';
   postalCode?: string | null;
+  lon?: number | null;
+  lat?: number | null;
   products?: (number | ProductType)[] | null;
   updatedAt: string;
   createdAt: string;
@@ -1469,6 +1471,8 @@ export interface LocationsSelect<T extends boolean = true> {
   city?: T;
   province?: T;
   postalCode?: T;
+  lon?: T;
+  lat?: T;
   products?: T;
   updatedAt?: T;
   createdAt?: T;
