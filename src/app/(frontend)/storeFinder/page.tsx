@@ -47,31 +47,17 @@ export default function StoreFinderPage() {
       const originPoint = turf.point(searchCoords)
 
       radiusFiltered = await Promise.all(
-        allLocations.map(async (loc) => {
-          const params = new URLSearchParams({
-            address_number: loc.address,
-            street: loc.street,
-            place: loc.city,
-            region: loc.province,
-            postcode: loc.postalCode || '',
-            country: 'Canada',
-            proximity: 'ip',
-            access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
-          })
-          const url = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`
-          const geoRes = await fetch(url)
-          const geoData = await geoRes.json()
-          if (!geoData.features?.length) return null
+        allLocations.map((loc) => {
+          if (loc.lon && loc.lat) {
+            const dest = turf.point([loc.lon, loc.lat])
+            const dist = turf.distance(originPoint, dest, { units: 'kilometers' })
 
-          const [lng, lat] = geoData.features[0].geometry.coordinates
-          const dest = turf.point([lng, lat])
-          const dist = turf.distance(originPoint, dest, { units: 'kilometers' })
-
-          // adds distance to location object
-          if (dist <= Number(kmRadius)) {
-            return { ...loc, distance: dist.toFixed(2) }
-          } else {
-            return null
+            // adds distance to location object
+            if (dist <= Number(kmRadius)) {
+              return { ...loc, distance: dist.toFixed(2) }
+            } else {
+              return null
+            }
           }
         }),
       )
@@ -81,27 +67,13 @@ export default function StoreFinderPage() {
       //get distance for everythign without km radius
       const originPoint = turf.point(searchCoords)
       radiusFiltered = await Promise.all(
-        allLocations.map(async (loc) => {
-          const params = new URLSearchParams({
-            address_number: loc.address,
-            street: loc.street,
-            place: loc.city,
-            region: loc.province,
-            postcode: loc.postalCode || '',
-            country: 'Canada',
-            proximity: 'ip',
-            access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!,
-          })
-          const url = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`
-          const geoRes = await fetch(url)
-          const geoData = await geoRes.json()
-          if (!geoData.features?.length) return null
+        allLocations.map((loc) => {
+          if (loc.lon && loc.lat) {
+            const dest = turf.point([loc.lon, loc.lat])
+            const dist = turf.distance(originPoint, dest, { units: 'kilometers' })
 
-          const [lng, lat] = geoData.features[0].geometry.coordinates
-          const dest = turf.point([lng, lat])
-          const dist = turf.distance(originPoint, dest, { units: 'kilometers' })
-
-          return { ...loc, distance: dist.toFixed(2) }
+            return { ...loc, distance: dist.toFixed(2) }
+          }
         }),
       )
     }
@@ -225,6 +197,7 @@ export default function StoreFinderPage() {
                 <h2 className="text-lg font-semibold">{location.storeName}</h2>
 
                 <p>
+                  {location.unit && <span>{location.unit} - </span>}
                   {location.address} {location.street} {location.city}, {location.province}
                   <br />
                   {location.postalCode}
