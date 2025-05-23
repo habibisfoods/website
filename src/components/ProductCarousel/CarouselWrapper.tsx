@@ -17,11 +17,11 @@ const responsive: ResponsiveType = {
     items: 4,
   },
   tablet: {
-    breakpoint: { max: 1024, min: 464 },
+    breakpoint: { max: 1024, min: 650 },
     items: 3,
   },
   mobile: {
-    breakpoint: { max: 464, min: 256 },
+    breakpoint: { max: 650, min: 256 },
     items: 2,
   },
   mini: {

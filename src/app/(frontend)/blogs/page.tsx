@@ -10,6 +10,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
+import { getServerSideURL } from '@/utilities/getURL'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -23,9 +24,9 @@ export default async function Page() {
     limit: 12,
     overrideAccess: false,
     where: {
-        postType: {
-            equals: 'blog',
-        },
+      postType: {
+        equals: 'blog',
+      },
     },
     select: {
       title: true,
@@ -63,10 +64,10 @@ export default async function Page() {
             </div>
             <div className="relative w-[500px] h-[500px] bg-gray-200 rounded-lg">
               {typeof latestPost?.meta?.image === 'object' && latestPost.meta.image && (
-                  <Media
-                    resource={latestPost.meta.image}
-                    imgClassName="absolute inset-0 w-full h-full object-cover rounded-xl"
-                  />
+                <Media
+                  resource={latestPost.meta.image}
+                  imgClassName="absolute inset-0 w-full h-full object-cover rounded-xl"
+                />
               )}
             </div>
           </div>
@@ -95,6 +96,9 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Blogs`,
+    title: `Blog Posts | Habibis Mediterranean Foods`,
+    openGraph: {
+      images: [{ url: `${getServerSideURL()}/Habibis-Full-Logo.svg` }],
+    },
   }
 }

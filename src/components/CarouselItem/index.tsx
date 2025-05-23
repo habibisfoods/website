@@ -39,7 +39,7 @@ export const CarouselItem: React.FC<{
   return (
     <article
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-orange-200 hover:cursor-pointer',
+        'border border-border rounded-lg bg-orange-200 hover:cursor-pointer',
         className,
       )}
     >
@@ -58,23 +58,21 @@ export const CarouselItem: React.FC<{
 
         {/* Title */}
         {titleToUse && (
-          <div className="prose">
-            <h4>
-              <CMSLink
-                className="text-black no-underline hover:underline"
-                appearance="inline"
-                type="custom"
-                url={href}
-              >
-                {titleToUse}
-              </CMSLink>
-            </h4>
+          <div className="prose aspect-[3/1] overflow-y-hidden hover:overflow-y-auto">
+            <CMSLink
+              className="text-black no-underline hover:underline"
+              appearance="inline"
+              type="custom"
+              url={href}
+            >
+              {titleToUse}
+            </CMSLink>
           </div>
         )}
 
         {/* Description */}
-        {description && (
-          <div className="mt-2 aspect-3/2 overflow-hidden">
+        {showDescription && (
+          <div className="mt-2 aspect-[5/2] overflow-y-hidden hover:overflow-y-auto text-xs">
             {showDescription && description && <p>{sanitizedDescription}</p>}
           </div>
         )}
