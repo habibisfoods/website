@@ -52,7 +52,7 @@ export const Locations: CollectionConfig<'locations'> = {
     },
     {
       name: 'address',
-      label: 'Address Number',
+      label: 'Address Number (Omit street & unit #)',
       type: 'text',
       required: true,
       hooks: {
